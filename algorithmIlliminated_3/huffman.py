@@ -1,6 +1,7 @@
-import json
 import heapq
 from collections import deque
+
+
 class Node:
     """ the root Node of a tree will have the pSum attribute"""
     def __init__(self, left, right, pSum):
@@ -26,9 +27,8 @@ class HuffmanTree:
     def init(self, inputList):
         trees = list()
         for item in inputList:
-            symbol = Symbol(item[0], item[1])
-            symbol.pSum = symbol.frequency
-            trees.append(symbol)
+            node = Node(None, None, item)
+            trees.append(node)
         return trees
 
     def argmins(self, trees):
@@ -58,9 +58,9 @@ class HuffmanTree:
 
     def findMin(self, firstQueue, secondQueue):
         if len(firstQueue) == 0:
-            return secondQueue[0]
+            return secondQueue.popleft()
         if len(secondQueue) == 0:
-            return firstQueue[0]
+            return firstQueue.popleft()
         if firstQueue[0].pSum < secondQueue[0].pSum:
             return firstQueue.popleft()
         return secondQueue.popleft()
@@ -76,7 +76,7 @@ class HuffmanTree:
         for item in sortedData:
             node = Node(None, None, item)
             queue1.append(node)
-        while not queue1.empty() or queue2.qsize() > 1:
+        while len(queue1) > 0 or len(queue2) > 1:
             minFirst = self.findMin(queue1, queue2)
             minSecond = self.findMin(queue1, queue2)
             node = Node(minFirst, minSecond, minFirst.pSum + minSecond.pSum)
@@ -85,17 +85,17 @@ class HuffmanTree:
         return queue2.popleft()
 
     def heap_HuffmanTree(self, inputData):
-        heap = []
+        q = []
         for item in inputData:
             node = Node(None, None, item)
-            heap.append((node.pSum, node))
-        heapq.heapify(heap)
-        while len(heap) > 1:
-            minFirst = heapq.heappop(heap)[1]
-            minSecond = heapq.heappop(heap)[1]
+            q.append((node.pSum, node))
+        heapq.heapify(q)
+        while len(q) > 1:
+            minFirst = heapq.heappop(q)[1]
+            minSecond = heapq.heappop(q)[1]
             node = Node(minFirst, minSecond, minFirst.pSum + minSecond.pSum)
-            heapq.heappush(heap, (node.pSum, node))
-        return heapq.heappop(heap)[1]
+            heapq.heappush(q, (node.pSum, node))
+        return heapq.heappop(q)[1]
 
     def main(self):
         #nodes = self.buildHuffmanTree(self.simpleInput())
@@ -112,5 +112,3 @@ class HuffmanTree:
         if node.left is not None:
             self.dumpCode(node.left, code + "0")
 
-huffmanTree = HuffmanTree()
-huffmanTree.main()
