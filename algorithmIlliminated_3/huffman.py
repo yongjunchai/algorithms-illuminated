@@ -103,12 +103,12 @@ class HuffmanTree:
         node = self.quadraticTime_buildHuffmanTree(self.complexInput())
         self.dumpCode(node, "")
 
-    def dumpCode(self, node, code):
+    def dumpCode(self, node, code, result):
         if node.left is None and node.right is None:
-            print("{} = {}".format(node.pSum, code))
+            result.append((node.pSum, code))
             return
         if node.right is not None:
-            self.dumpCode(node.right, code + "1")
+            self.dumpCode(node.right, code + "1", result)
         if node.left is not None:
-            self.dumpCode(node.left, code + "0")
+            self.dumpCode(node.left, code + "0", result)
 
