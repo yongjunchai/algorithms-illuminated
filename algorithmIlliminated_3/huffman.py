@@ -5,9 +5,9 @@ from collections import deque
 class Node:
     """ the root Node of a tree will have the pSum attribute"""
     def __init__(self, left, right, pSum):
-        self.left = left
-        self.right = right
-        self.pSum = pSum
+        self.left: Node = left
+        self.right: Node = right
+        self.pSum: int = pSum
 
 
 class Symbol(Node):
@@ -47,6 +47,8 @@ class HuffmanTree:
         return smallest, secondSmallest
 
     def quadraticTime_buildHuffmanTree(self, inputList):
+        if inputList is None or len(inputList) == 0:
+            return None
         trees = self.init(inputList)
         while len(trees) > 1:
             smallest, secondSmallest = self.argmins(trees)
@@ -70,6 +72,8 @@ class HuffmanTree:
        :param inputData:  list for the frequency of symbols
         :return:
         """
+        if inputData is None or len(inputData) == 0:
+            return None
         queue1 = deque()
         queue2 = deque()
         sortedData = sorted(inputData)
@@ -85,6 +89,8 @@ class HuffmanTree:
         return queue2.popleft()
 
     def heap_HuffmanTree(self, inputData):
+        if inputData is None or len(inputData) == 0:
+            return None
         q = []
         for item in inputData:
             node = Node(None, None, item)
@@ -111,4 +117,11 @@ class HuffmanTree:
             self.dumpCode(node.right, code + "1", result)
         if node.left is not None:
             self.dumpCode(node.left, code + "0", result)
+
+    def dumpCodeIterate(self, node, code, result):
+        if node is None:
+            return
+        stack = deque()
+        while(len(stack) > 0):
+            stack.p
 
