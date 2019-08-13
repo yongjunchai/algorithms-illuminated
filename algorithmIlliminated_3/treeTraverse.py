@@ -31,27 +31,26 @@ class Tree:
                 queue.append(cur.right)
         return root
 
-    def dfaRecursive(self, cur: Node, result: list):
+    def dfsRecursive(self, cur: Node, result: list):
         if cur is None:
             return
         result.append(cur.pSum)
-        self.dfaRecursive(cur.left)
-        self.dfaRecursive(cur.right)
+        self.dfsRecursive(cur.left, result)
+        self.dfsRecursive(cur.right, result)
 
-    def dfaIterative(self, root: Node):
+    def dfsIterative(self, root: Node):
         if root is None:
             return
         result = []
-        stack = deque()
-        stack.append(root)
+        stack = [root]
         while len(stack) > 0:
-            cur = stack.popleft()
+            cur = stack.pop()
             result.append(cur.pSum)
-            if cur.left is not None:
-                stack.append(cur.left)
             if cur.right is not None:
                 stack.append(cur.right)
-
+            if cur.left is not None:
+                stack.append(cur.left)
+        return result
 
     def printLevel(self, cur: Node, level: int, result: list):
         if cur is None or level < 1:
