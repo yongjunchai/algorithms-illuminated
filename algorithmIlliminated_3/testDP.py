@@ -1,6 +1,7 @@
 import unittest
 from algorithmIlliminated_3.dp import *
 
+
 class TestDP(unittest.TestCase):
     def test_wis_divide_and_conquer(self):
         dp = DP()
