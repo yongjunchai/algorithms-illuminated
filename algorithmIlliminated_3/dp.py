@@ -8,11 +8,14 @@ class Node:
 
 
 class Item:
-    def __init__(self, size: int, value: int):
+    def __init__(self, size: int, value: int, index: int):
         assert (size is int and size > 0)
         assert (value is int and value > 0)
+        assert (index is int and index >= 0)
         self.value = value
         self.size = size
+        self.index = index
+
 
 
 class Knapsack:
@@ -36,12 +39,12 @@ class DP:
             res = res + node.value
         return res
 
-    def wis_divide_and_conquer_internal(self, values: list):
-        if len(values) <= 1:
-            return values
-        mid = int(len(values) / 2)
-        left = values[0:mid]
-        right = values[mid:]
+    def wis_divide_and_conquer_internal(self, nodes: list):
+        if len(nodes) <= 1:
+            return nodes
+        mid = int(len(nodes) / 2)
+        left = nodes[0:mid]
+        right = nodes[mid:]
         leftMerged = self.wis_divide_and_conquer_internal(left)
         rightMerged = self.wis_divide_and_conquer_internal(right)
         if leftMerged[len(leftMerged) - 1].index + 1 == rightMerged[0].index:
@@ -70,21 +73,22 @@ class DP:
         res = self.wis_divide_and_conquer_internal(nodes)
         return res
 
-    def calSumForNumArray(self, values):
-        total = 0
-        for i in values:
-            total = total + i
-        return total
-
     def wis_dp_recursive(self, values):
-        if len(values) <= 1:
-            return values
-        s1 = self.wis_dp_recursive(values[0:len(values) - 1])
-        s2 = self.wis_dp_recursive(values[0:len(values) - 2])
-        if self.calSumForNumArray(s1) > (self.calSumForNumArray(s2) + values[len(values) - 1]):
+        nodes = []
+        for i in range(0, len(values)):
+            node = Node(values[i], i)
+            nodes.append(node)
+        return self.wis_dp_recursive_internal(nodes)
+
+    def wis_dp_recursive_internal(self, nodes):
+        if len(nodes) <= 1:
+            return nodes
+        s1 = self.wis_dp_recursive_internal(nodes[0:len(nodes) - 1])
+        s2 = self.wis_dp_recursive_internal(nodes[0:len(nodes) - 2])
+        if self.calSum(s1) > (self.calSum(s2) + nodes[len(nodes) - 1].value):
             return s1
         else:
-            s2.append(values[len(values) - 1])
+            s2.append(nodes[len(nodes) - 1])
             return s2
 
     def wis_dp_recursive_cache_internal(self, subProblemSolutions, indexSolution, values):
@@ -103,7 +107,7 @@ class DP:
         if values is None or len(values) <= 1:
             assert(False)
             return
-        subProblemSolutions = [None for i in (len(values) + 1)]
+        subProblemSolutions = [None for i in range(len(values) + 1)]
         subProblemSolutions[0] = 0
         subProblemSolutions[1] = values[0]
         self.wis_dp_recursive_cache_internal(subProblemSolutions, len(values), values)
@@ -128,29 +132,29 @@ class DP:
             if subProblemSolutions[i] > subProblemSolutions[i - 2] + values[i - 1]:
                 i = i - 1
                 continue
-            queue.appendleft(values[i - 1])
+            queue.appendleft(Node(values[i - 1], i - 1))
             i = i - 2
         if i == 1:
-            queue.appendleft(values[0])
+            queue.appendleft(Node(values[0], 0))
         return queue
 
     def solveKnapsackProblem(self, knapsack: Knapsack):
         assert (knapsack is Knapsack)
         subProblemSolutions = [[None for i in range(len(knapsack.items) + 1)] for j in range(len(knapsack.capacity) + 1)]
         for i in range(0, len(knapsack.items) + 1):
-            subProblemSolutions[i][0] = 0
+            subProblemSolutions[0][i] = 0
         for c in range(0, knapsack.capacity + 1):
-            subProblemSolutions[0][c] = 0
+            subProblemSolutions[c][0] = 0
         for i in range(1, len(knapsack.items) + 1):
             for c in range(1, knapsack.capacity + 1):
                 if knapsack.items[i - 1] > c:
-                    subProblemSolutions[i][c] = subProblemSolutions[i - 1][c]
+                    subProblemSolutions[c][i] = subProblemSolutions[c][i - 1]
                 else:
-                    if subProblemSolutions[i - 1][c] > subProblemSolutions[i - 1][c - knapsack.items[i - 1].size] + \
+                    if subProblemSolutions[c][i - 1] > subProblemSolutions[c - knapsack.items[i - 1].size][i - 1] + \
                             knapsack.items[i - 1].value:
-                        subProblemSolutions[i][c] = subProblemSolutions[i - 1][c]
+                        subProblemSolutions[c][i] = subProblemSolutions[c][i - 1]
                     else:
-                        subProblemSolutions[i][c] = subProblemSolutions[i - 1][c - knapsack.items[i - 1].size] + \
+                        subProblemSolutions[c][i] = subProblemSolutions[c - knapsack.items[i - 1].size][i - 1] + \
                                                     knapsack.items[i - 1].value
         return subProblemSolutions
 
@@ -159,8 +163,8 @@ class DP:
         c = knapsack.capacity
         i = len(knapsack.items)
         while i > 0:
-            if knapsack.items[i - 1].size < c and subProblemSolutions[i - 1][c - knapsack.items[i - 1].size] + \
-                    knapsack.items[i - 1].value > subProblemSolutions[i - 1][c]:
+            if knapsack.items[i - 1].size < c and subProblemSolutions[c - knapsack.items[i - 1].size][i - 1] + \
+                    knapsack.items[i - 1].value > subProblemSolutions[c][i - 1]:
                 solution.appendleft(knapsack.items[i - 1])
                 c = c - knapsack.items[i - 1].size
             i = i - 1
