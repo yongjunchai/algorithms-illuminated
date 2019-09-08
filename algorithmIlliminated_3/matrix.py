@@ -1,4 +1,6 @@
 import numpy
+
+
 def createMatrix(rows, columns):
     m = [[None for i in range(columns)] for j in range(rows)]
     cnt = 0
