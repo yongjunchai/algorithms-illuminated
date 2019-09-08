@@ -8,10 +8,10 @@ class Node:
 
 
 class Item:
-    def __init__(self, size: int, value: int, index: int):
-        assert (size is int and size > 0)
-        assert (value is int and value > 0)
-        assert (index is int and index >= 0)
+    def __init__(self, index: int, value: int, size: int):
+        assert (type(size) is int and size > 0)
+        assert (type(value) is int and value > 0)
+        assert (type(index) is int and index >= 0)
         self.value = value
         self.size = size
         self.index = index
@@ -20,11 +20,8 @@ class Item:
 
 class Knapsack:
     def __init__(self, capacity: int, items: list):
-        assert (capacity is int and capacity > 0)
+        assert (type(capacity) is int and capacity > 0)
         assert (len(items) > 0)
-        for item in items:
-            assert (item.size is int and item.size > 0)
-            assert (item.value is int and item.value > 0)
         self.capacity = capacity
         self.items = items
 
@@ -139,15 +136,15 @@ class DP:
         return queue
 
     def solveKnapsackProblem(self, knapsack: Knapsack):
-        assert (knapsack is Knapsack)
-        subProblemSolutions = [[None for i in range(len(knapsack.items) + 1)] for j in range(len(knapsack.capacity) + 1)]
+        assert (type(knapsack) is Knapsack)
+        subProblemSolutions = [[None for i in range(len(knapsack.items) + 1)] for j in range(knapsack.capacity + 1)]
         for i in range(0, len(knapsack.items) + 1):
             subProblemSolutions[0][i] = 0
         for c in range(0, knapsack.capacity + 1):
             subProblemSolutions[c][0] = 0
         for i in range(1, len(knapsack.items) + 1):
             for c in range(1, knapsack.capacity + 1):
-                if knapsack.items[i - 1] > c:
+                if knapsack.items[i - 1].size > c:
                     subProblemSolutions[c][i] = subProblemSolutions[c][i - 1]
                 else:
                     if subProblemSolutions[c][i - 1] > subProblemSolutions[c - knapsack.items[i - 1].size][i - 1] + \

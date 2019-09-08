@@ -37,8 +37,23 @@ class TestDP(unittest.TestCase):
                 self.assertTrue(exp[i] == dpIterativeCacheNodes[i].value)
 
     def test_knapsack(self):
-        pass
+        testData = [((6, [Item(1, 3, 4), Item(2, 2, 3), Item(3, 4, 2), Item(4, 4, 3)]), [Item(3, 4, 2), Item(4, 4, 3)]),
+                    ((1, [Item(1, 3, 4), Item(2, 2, 3), Item(3, 4, 2), Item(4, 4, 3)]), []),
+                    ((100, [Item(1, 3, 4), Item(2, 2, 3), Item(3, 4, 2), Item(4, 4, 3)]), [Item(1, 3, 4), Item(2, 2, 3), Item(3, 4, 2), Item(4, 4, 3)])
+                    ]
+
+        for data in testData:
+            knapsack = Knapsack(data[0][0], data[0][1])
+            expected = data[1]
+            dp = DP()
+            subProblemSolutions = dp.solveKnapsackProblem(knapsack)
+            solution = dp.constructKnapsackSolution(subProblemSolutions, knapsack)
+            self.assertTrue(len(expected) == len(solution))
+            for i in range(0, len(expected)):
+                self.assertTrue(expected[i].index == solution[i].index)
+                self.assertTrue(expected[i].size == solution[i].size)
+                self.assertTrue(expected[i].value == solution[i].value)
 
 
 if __name__ == '__main__':
-    unittest.main()
+   unittest.main()
