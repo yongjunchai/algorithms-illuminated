@@ -54,6 +54,11 @@ class TestDP(unittest.TestCase):
                 self.assertTrue(expected[i].size == solution[i].size)
                 self.assertTrue(expected[i].value == solution[i].value)
 
+    def test_dumpSolution(self):
+        knapsack = Knapsack(9, [Item(1, 1, 1), Item(2, 2, 3), Item(3, 3, 2), Item(4, 4, 5), Item(5, 5, 4)])
+        dp = DP()
+        subProblemSolutions = dp.solveKnapsackProblem(knapsack)
+        print(subProblemSolutions)
 
 if __name__ == '__main__':
    unittest.main()
