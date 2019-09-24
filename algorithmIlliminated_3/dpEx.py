@@ -20,14 +20,14 @@ class DpEx:
     def __init__(self):
         pass
 
-    def constructDoubleKnapsackSolution(self, c1, c2, items, subProblemSolutions):
+    def constructDoubleKnapsackSolution(self, c1: int, c2: int, items: list, subProblemSolutions: list):
         assert(type(c1) is int)
         assert(type(c2) is int)
         assert(type(items) is list)
         assert(type(subProblemSolutions) is list)
-        ascii(len(subProblemSolutions) == len(items) + 1)
-        ascii(len(subProblemSolutions[0]) == c2 + 1)
-        ascii(len(subProblemSolutions[0][0]) == c1 + 1)
+        assert (len(subProblemSolutions) == len(items) + 1)
+        assert (len(subProblemSolutions[0]) == c2 + 1)
+        assert (len(subProblemSolutions[0][0]) == c1 + 1)
         solution = list()
         i = len(items)
         j = c2
@@ -159,6 +159,41 @@ class DpEx:
             i = i - 1
         return solution
 
+    def solveKnapsacks(self, capacity: int, budget: int, items: list):
+        """
+        :param capacity:  the capacity of the knapsack
+        :param budget: the number of items to pick up
+        :param items:
+        :return: the solution to sub problems
+        """
+        assert(budget <= len(items))
+        subProblemSolutions = Utils.createArray([budget + 1, len(items) + 1, capacity + 1])
+        Utils.updateValue(subProblemSolutions, [0], 0)
+        for i in range(1, budget + 1):
+            Utils.updateValue(subProblemSolutions, [i, 0], 0)
+            for j in range(1, len(items) + 1):
+                subProblemSolutions[i][j][0] = 0
+        for i in range(1, budget + 1):
+            for j in range(1, len(items) + 1):
+                for k in range(1, capacity + 1):
+                    subProblemSolutions[i][j][k] = subProblemSolutions[i][j - 1][k]
+                    if items[j - 1].size < k:
+                        value = subProblemSolutions[i - 1][j - 1][k - items[j - 1].size] + items[j - 1].value
+                        if value > subProblemSolutions[i][j - 1][k]:
+                            subProblemSolutions[i][j][k] = value
 
-
+    def constructKnapsackSolution(self, capacity: int, budget: int, items: list, subProblemSolutions: list):
+        i = budget
+        j = len(items)
+        k = capacity
+        solution = []
+        while i > 0:
+            if  subProblemSolutions[i][j][k] <= subProblemSolutions[i][j - 1][k]:
+                j = j - 1
+                continue
+            solution.append((items[j - 1].index, items[j - 1]))
+            k = k - items[j - 1].size
+            i = i - 1
+            j = j - 1
+        return solution
 
