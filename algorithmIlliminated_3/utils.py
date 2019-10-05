@@ -2,7 +2,7 @@
 class Utils:
     @staticmethod
     def createArray_internal(dimensions: list, index: int, root):
-        if len(dimensions) <= index:
+        if index >= len(dimensions):
             return
         if root is None:
             assert(False)

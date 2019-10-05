@@ -1,4 +1,6 @@
 from algorithmIlliminated_3.utils import *
+
+
 class Item:
     def __init__(self, index: int, value: int, size: int):
         assert (type(size) is int and size > 0)
@@ -26,12 +28,12 @@ class DpEx:
         assert(type(items) is list)
         assert(type(subProblemSolutions) is list)
         assert (len(subProblemSolutions) == len(items) + 1)
-        assert (len(subProblemSolutions[0]) == c2 + 1)
-        assert (len(subProblemSolutions[0][0]) == c1 + 1)
+        assert (len(subProblemSolutions[0]) == c1 + 1)
+        assert (len(subProblemSolutions[0][0]) == c2 + 1)
         solution = list()
         i = len(items)
-        j = c2
-        k = c1
+        j = c1
+        k = c2
         while i > 0:
             if subProblemSolutions[i][j][k] <= subProblemSolutions[i - 1][j][k]:
                 i = i - 1
@@ -44,10 +46,10 @@ class DpEx:
                 c2Val = subProblemSolutions[i - 1][j - items[i - 1].size][k] + items[i - 1].value
             if c1Val >= subProblemSolutions[i][j][k]:
                 k = k - items[i - 1].size
-                solution.append(("c1", items[i - 1]))
+                solution.append(("c2", items[i - 1]))
             elif c2Val >= subProblemSolutions[i][j][k]:
                 j = j - items[i - 1].size
-                solution.append(("c2", items[i - 1]))
+                solution.append(("c1", items[i - 1]))
             else:
                 assert(False)
             i = i - 1
@@ -57,15 +59,15 @@ class DpEx:
         assert(type(c1) is int)
         assert(type(c2) is int)
         assert(type(items) is list)
-        subProblemSolutions = Utils.createArray([len(items) + 1, c2 + 1, c1 + 1])
-        for i in range(c2 + 1):
-            for j in range(c1 + 1):
+        subProblemSolutions = Utils.createArray([len(items) + 1, c1 + 1, c2 + 1])
+        for i in range(c1 + 1):
+            for j in range(c2 + 1):
                 subProblemSolutions[0][i][j] = 0
         for i in range(len(items) + 1):
             subProblemSolutions[i][0][0] = 0
         for i in range(1, len(items) + 1):
-            for j in range(c2 + 1):
-                for k in range(c1 + 1):
+            for j in range(c1 + 1):
+                for k in range(c2 + 1):
                     c1Val = -1
                     c2Val = -1
                     if items[i - 1].size <= k:
