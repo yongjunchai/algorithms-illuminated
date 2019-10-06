@@ -29,24 +29,6 @@ class Utils:
 
     @staticmethod
     def updateValue(arr: list, indices: list, value):
-        cur = arr
-        i = len(indices) - 1
-        for j in range(indices):
-            if j == i:
-                cur[indices[j]] = value
-                break
-            cur = cur[indices[j]]
-
-    @staticmethod
-    def updateValue(slot: list, value):
-        for i in range(len(slot)):
-           if type(slot(i)) is list:
-               Utils.updateValue(slot(i), value)
-           else:
-               slot[i] = value
-
-    @staticmethod
-    def updateArr(arr: list, indices: list, value):
         """
         apply the value to all the remaining dimensions
         for example indices = [3, 2]
@@ -57,8 +39,23 @@ class Utils:
         :param value:
         :return:
         """
-        slot = Utils.getValue(arr, indices)
-        if type(slot) is list:
-            Utils.updateValue(slot, value)
-        else:
-            Utils.updateValue(arr, indices,  value)
+        cur = arr
+        i = len(indices) - 1
+        for j in range(len(indices)):
+            if j == i:
+                if type(cur[indices[j]]) is list:
+                    Utils.updateSlot(cur[indices[j]], value)
+                else:
+                    cur[indices[j]] = value
+            else:
+                cur = cur[indices[j]]
+
+    @staticmethod
+    def updateSlot(slot: list, value):
+        for i in range(len(slot)):
+            if type(slot[i]) is list:
+                Utils.updateSlot(slot[i], value)
+            else:
+               slot[i] = value
+
+

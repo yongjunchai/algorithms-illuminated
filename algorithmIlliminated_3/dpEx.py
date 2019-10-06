@@ -83,13 +83,14 @@ class DpEx:
                         subProblemSolutions[i][j][k] = c3Val
         return subProblemSolutions
 
-    def  pickKnapsack(self, subProblemSolutions, indices: list, items: list, dimensions: int):
+    def pickKnapsack(self, subProblemSolutions, indices: list, items: list, dimensions: int):
         result = [-1 for i in range(dimensions)]
         for i in range(1, dimensions):
             if indices[i] < items[indices[0] - 1].size:
                 continue
             copiedIndices = indices.copy()
             copiedIndices[i] = copiedIndices[i] - items[indices[0] - 1].size
+            copiedIndices[0] = copiedIndices[0] - 1
             value = Utils.getValue(subProblemSolutions, copiedIndices) + items[indices[0] - 1].value
             result[i] = value
         pickedValue = -1
@@ -100,14 +101,17 @@ class DpEx:
                 pickedIndex = i
         return pickedIndex
 
-    def solveKnapsacks(self, subProblemSolutions, indices: list, items: list, dimensions: int):
+    def solveKnapsacks_internal(self, subProblemSolutions, indices: list, items: list, dimensions: int):
         if len(indices) < dimensions:
             slot = Utils.getValue(subProblemSolutions, indices)
             for i in range(len(slot)):
-                self.solveKnapsacks(subProblemSolutions, indices.copy().append(i), items, dimensions)
+                indicesCopied = indices.copy()
+                indicesCopied.append(i)
+                self.solveKnapsacks_internal(subProblemSolutions, indicesCopied, items, dimensions)
         else:
-            i = self.pickKnapsack(subProblemSolutions, indices)
+            i = self.pickKnapsack(subProblemSolutions, indices, items, dimensions)
             if i < 1:
+                # items[indices[0]] was not picked up in any knapsack
                 copiedIndices = indices.copy()
                 copiedIndices[0] = copiedIndices[0] - 1
                 Utils.updateValue(subProblemSolutions, indices, Utils.getValue(subProblemSolutions, copiedIndices))
@@ -118,6 +122,7 @@ class DpEx:
 
                 copiedIndices = indices.copy()
                 copiedIndices[i] = copiedIndices[i] - items[indices[0] - 1].size
+                copiedIndices[0] = copiedIndices[0] - 1
                 value = Utils.getValue(subProblemSolutions, copiedIndices) + items[indices[0] - 1].value
                 if preVal > value:
                     Utils.updateValue(subProblemSolutions, indices, preVal)
@@ -127,41 +132,40 @@ class DpEx:
     def solveKnapsacks(self, knapsacks: list, items: list):
         """
         :param knapsacks: a list of knapsacks. The value of each knapsack is the capacity of the knapsack.
-        :param items: the items to be distributed into the knapsacks. each item has files: index, value, size
+        :param items: the items to be distributed into the knapsacks. each item has fields: index, value, size
         :return: the solution to sub problems
         """
-        for i in knapsacks:
+        for i in range(len(knapsacks)):
             knapsacks[i] = knapsacks[i] + 1
         dimensions = [len(items) + 1]
         dimensions.extend(knapsacks)
         subProblemSolutions = Utils.createArray(dimensions)
         Utils.updateValue(subProblemSolutions, [0], 0)
         for i in range(1, len(items) + 1):
-            self.solveKnapsacks(subProblemSolutions, [i], items, len(knapsacks) + 1)
+            self.solveKnapsacks_internal(subProblemSolutions, [i], items, len(knapsacks) + 1)
         return subProblemSolutions
 
     def constructKnapsacksSolution(self, subProblemSolutions, knapsacks: list, items: list):
         indices = [len(items)]
         indices.extend(knapsacks)
         i = len(items)
-        solution = dict()
+        solution = list()
         while i > 0:
             indices[0] = i
             copiedIndices = indices.copy()
             copiedIndices[0] = copiedIndices[0] - 1
-            if Utils.getValue(subProblemSolutions, indices) <= Utils.getValue(copiedIndices):
+            if Utils.getValue(subProblemSolutions, indices) <= Utils.getValue(subProblemSolutions, copiedIndices):
+                # item[indices[0]] was not picked up in any knapsack
                 i = i - 1
                 continue
             j = self.pickKnapsack(subProblemSolutions, indices, items, len(indices))
             assert(j > 0)
-            if solution.get(str(j)) is None:
-                solution.update(str(j), [])
-            solution.get(str(j)).append(items[i - 1].index)
+            solution.append((str(j), items[i - 1]))
             indices[j] = indices[j] - items[i - 1].size
             i = i - 1
         return solution
 
-    def solveKnapsacks(self, capacity: int, budget: int, items: list):
+    def solveKnapsacksBudget(self, capacity: int, budget: int, items: list):
         """
         :param capacity:  the capacity of the knapsack
         :param budget: the number of items to pick up
@@ -184,7 +188,7 @@ class DpEx:
                         if value > subProblemSolutions[i][j - 1][k]:
                             subProblemSolutions[i][j][k] = value
 
-    def constructKnapsackSolution(self, capacity: int, budget: int, items: list, subProblemSolutions: list):
+    def constructKnapsackBudgetSolution(self, capacity: int, budget: int, items: list, subProblemSolutions: list):
         i = budget
         j = len(items)
         k = capacity
