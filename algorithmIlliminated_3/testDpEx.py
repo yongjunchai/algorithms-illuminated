@@ -32,7 +32,7 @@ class DpExTestCase(unittest.TestCase):
             for bagName in results:
                 assert(expected[bagName] == results[bagName])
 
-    def test_solveMultiplesKnapsacks(self):
+    def test_solveMultiplesKnapsacks_2Knapsacks(self):
         dataSet = [
             (([Item(1, 2, 3), Item(2, 3, 4), Item(3, 4, 2), Item(4, 4, 3)], 5, 4), ({"1": [3, 4], "2": [2]})),
                    (([Item(1, 2, 3), Item(2, 3, 4), Item(3, 4, 4), Item(4, 4, 3)], 2, 100),
@@ -44,7 +44,7 @@ class DpExTestCase(unittest.TestCase):
                    (([Item(1, 2, 7), Item(2, 3, 18), Item(3, 4, 100)], 106, 30), ({"1": [3], "2": [1, 2]})),
                    (([Item(1, 20, 7), Item(2, 3, 3), Item(3, 4, 8), Item(4, 1, 3), Item(5, 2, 2)], 8, 12),
                     ({"1": [3], "2": [1, 2, 5]}))
-                   ]
+        ]
         for data in dataSet:
             expected = data[1]
             items = data[0][0]
@@ -53,6 +53,33 @@ class DpExTestCase(unittest.TestCase):
             dpEx = DpEx()
             subProblemSolutions = dpEx.solveKnapsacks([c1, c2], items)
             solution = dpEx.constructKnapsacksSolution(subProblemSolutions, [c1, c2], items)
+            results = dict()
+            for i in solution:
+                bagName = i[0]
+                item = i[1]
+                if results.get(bagName) is None:
+                    results[bagName] = list()
+                results[bagName].append(item.index)
+            for bagName in results:
+                results[bagName] = sorted(results[bagName])
+            print(results)
+            for bagName in results:
+                assert(expected[bagName] == results[bagName])
+
+    def test_solveMultiplesKnapsacks_3Knapsacks(self):
+        dataSet = [
+                   (([Item(1, 4, 3), Item(2, 4, 4), Item(3, 5, 6), Item(4, 1, 9), Item(5, 12, 7), Item(6, 2, 5) ], 8, 9, 4),
+                    ({"1": [5], "2": [1, 3], "3": [2]}))
+        ]
+        for data in dataSet:
+            expected = data[1]
+            items = data[0][0]
+            c1 = data[0][1]
+            c2 = data[0][2]
+            c3 = data[0][3]
+            dpEx = DpEx()
+            subProblemSolutions = dpEx.solveKnapsacks([c1, c2, c3], items)
+            solution = dpEx.constructKnapsacksSolution(subProblemSolutions, [c1, c2, c3], items)
             results = dict()
             for i in solution:
                 bagName = i[0]
