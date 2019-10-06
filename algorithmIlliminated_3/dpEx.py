@@ -179,27 +179,29 @@ class DpEx:
             Utils.updateValue(subProblemSolutions, [i, 0], 0)
             for j in range(1, len(items) + 1):
                 subProblemSolutions[i][j][0] = 0
+
         for i in range(1, budget + 1):
             for j in range(1, len(items) + 1):
                 for k in range(1, capacity + 1):
                     subProblemSolutions[i][j][k] = subProblemSolutions[i][j - 1][k]
-                    if items[j - 1].size < k:
+                    if items[j - 1].size <= k:
                         value = subProblemSolutions[i - 1][j - 1][k - items[j - 1].size] + items[j - 1].value
                         if value > subProblemSolutions[i][j - 1][k]:
                             subProblemSolutions[i][j][k] = value
+        return subProblemSolutions
 
     def constructKnapsackBudgetSolution(self, capacity: int, budget: int, items: list, subProblemSolutions: list):
         i = budget
         j = len(items)
         k = capacity
         solution = []
-        while i > 0:
-            if  subProblemSolutions[i][j][k] <= subProblemSolutions[i][j - 1][k]:
+        while i > 0 and j > 0 and k > 0:
+            if subProblemSolutions[i][j][k] <= subProblemSolutions[i][j - 1][k]:
                 j = j - 1
                 continue
-            solution.append((items[j - 1].index, items[j - 1]))
-            k = k - items[j - 1].size
+            solution.append(items[j - 1].index)
             i = i - 1
             j = j - 1
+            k = k - items[j - 1].size
         return solution
 

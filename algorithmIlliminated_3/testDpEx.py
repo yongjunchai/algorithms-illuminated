@@ -93,6 +93,27 @@ class DpExTestCase(unittest.TestCase):
             for bagName in results:
                 assert(expected[bagName] == results[bagName])
 
+    def test_solveBudgetKnapsack(self):
+        dataSet = [
+                   (([Item(1, 10, 3), Item(2, 4, 4), Item(3, 5, 6), Item(4, 1, 9), Item(5, 12, 7), Item(6, 2, 5) ], 2, 9),
+                    [1, 3]),
+            (([Item(1, 10, 3), Item(2, 4, 4), Item(3, 5, 6), Item(4, 1, 9), Item(5, 12, 7), Item(6, 2, 5)], 1, 9),
+             [5]),
+            (([Item(1, 10, 3), Item(2, 4, 4), Item(3, 5, 6), Item(4, 1, 9), Item(5, 12, 7), Item(6, 2, 5)], 3, 90),
+             [1, 3, 5]),
+
+        ]
+        for data in dataSet:
+            expected = data[1]
+            items = data[0][0]
+            budget = data[0][1]
+            c1 = data[0][2]
+            dpEx = DpEx()
+            subProblemSolutions = dpEx.solveKnapsacksBudget(c1, budget, items)
+            solution = dpEx.constructKnapsackBudgetSolution(c1, budget, items, subProblemSolutions)
+            results = sorted(solution)
+            self.assertTrue(expected == results)
+
 if __name__ == '__main__':
     unittest.main()
 
