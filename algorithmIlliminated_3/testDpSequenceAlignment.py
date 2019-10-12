@@ -4,7 +4,7 @@ import unittest
 
 
 class SequenceAlignmentTestCase(unittest.TestCase):
-    def test_getMinNwScoreRecursive(self):
+        def test_getMinNwScoreRecursive(self):
         str1 = "adbc"
         str2 = "aebfc"
         sequenceAlignment = SequenceAlignment()
