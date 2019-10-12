@@ -1,3 +1,4 @@
+from algorithmIlliminated_3.utils import *
 
 class Result:
     def __init__(self, str1, str2):
@@ -60,5 +61,58 @@ class SequenceAlignment:
         result.str2 = r1.str2 + str2[len(str2) - 1]
         return result
 
+    def getMinNwScoreDp(self, str1, str2):
+        subProblemsSolution = Utils.createArray([len(str1) + 1, len(str2) + 1])
+        for j in range(0, len(str2) + 1):
+            subProblemsSolution[0][j] = j
+        for i in range(0, len(str1) + 1):
+            subProblemsSolution[i][0] = i
+        for i in range(1, len(str1) + 1):
+            for j in range(1, len(str2) + 1):
+                score1 = subProblemsSolution[i - 1][j - 1] + self.getScore(str1[i - 1], str2[j - 1])
+                score2 = subProblemsSolution[i - 1][j] + self.getScoreGap()
+                score3 = subProblemsSolution[i][j - 1] + self.getScoreGap()
+                if score1 <= score2 and score1 <= score3:
+                    subProblemsSolution[i][j] = score1
+                elif score2 <= score3 and score2 <= score1:
+                    subProblemsSolution[i][j] = score2
+                else:
+                    subProblemsSolution[i][j] = score3
+        return subProblemsSolution
+
+    def constructMinNwSolution(self, str1, str2, subProblemsSolution):
+        i = len(str1)
+        j = len(str2)
+        result = Result("", "")
+        result.score = subProblemsSolution[i][j]
+        while i > 0 or j > 0:
+            if i == 0:
+                result.str1 = "-" * j + result.str1
+                result.str2 = str2[0:j] + result.str2
+                break
+            if j == 0:
+                result.str2 = "-" * i + result.str2
+                result.str1 = str1[0:i] + result.str1
+                break
+            score1 = subProblemsSolution[i - 1][j - 1] + self.getScore(str1[i - 1], str2[j - 1])
+            score2 = subProblemsSolution[i - 1][j] + self.getScoreGap()
+            score3 = subProblemsSolution[i][j - 1] + self.getScoreGap()
+            if score1 <= subProblemsSolution[i][j]:
+                result.str1 = str1[i - 1] + result.str1
+                result.str2 = str2[j - 1] + result.str2
+                i = i - 1
+                j = j - 1
+            elif score2 <= subProblemsSolution[i][j]:
+                result.str1 = str1[i - 1] + result.str1
+                result.str2 = "-" + result.str2
+                i = i - 1
+            elif score3 <= subProblemsSolution[i][j]:
+                result.str1 = "-" + result.str1
+                result.str2 = str2[j - 1] + result.str2
+                j = j - 1
+            else:
+                assert(False)
+
+        return result
 
 
