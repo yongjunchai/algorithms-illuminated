@@ -31,7 +31,7 @@ class SequenceAlignment:
                 result.str2 = "-" * len(str1)
             if len(str2) != 0:
                 result.score = len(str2) * SequenceAlignment.getScoreGap()
-                result.str1 = "-" * len(str1)
+                result.str1 = "-" * len(str2)
             return result
 
         if len(str1) == len(str2) == 1:
@@ -44,16 +44,20 @@ class SequenceAlignment:
         r1Score = r1.score + self.getScore(str1[len(str1) - 1], str2[len(str2) - 1])
         r2Score = r2.score + SequenceAlignment.getScoreGap()
         r3Score = r3.score + SequenceAlignment.getScoreGap()
-        if  r1Score <= r2Score <= r3Score:
-            result.str1 = result.str1 + "-"
+        if  r3Score <= r1Score and r3Score <= r2Score:
+            result.str1 = r3.str1 + "-"
+            result.str2 = r3.str2 + str2[len(str2) - 1]
             result.score = r3Score
             return result
 
-        if r1Score <= r3Score <= r2Score:
-            result.str2 = result.str2 + "-"
+        if r2Score <= r3Score and r2Score <= r1Score:
+            result.str1 = r2.str1 + str1[len(str1) - 1]
+            result.str2 = r2.str2 + "-"
             result.score = r2Score
             return result
         result.score = r1Score
+        result.str1 = r1.str1 + str1[len(str1) - 1]
+        result.str2 = r1.str2 + str2[len(str2) - 1]
         return result
 
 
