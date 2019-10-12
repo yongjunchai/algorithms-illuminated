@@ -47,7 +47,7 @@ class SequenceAlignmentTestCase(unittest.TestCase):
             self.assertTrue(result.str2 == expectdResult[2])
 
     def test_getMinNwScoreDp_play(self):
-        inputData = ("kdewfwlfsljdfsjdfabcdef", "sfsfdsfsdfsdfsdfsdfabcdefghijkllmmhjgjhghl")
+        inputData = ("aadflkja;slkfj;asaljf;asskjf;lkdjkdewf", "asdjjf;alsjf;laskjf;lasjf;laskjf;alssj;lskjj;;slkj;lkjkkdewf")
         sequenceAlignment = SequenceAlignment()
         subProblemsSolution = sequenceAlignment.getMinNwScoreDp(inputData[0], inputData[1])
         result = sequenceAlignment.constructMinNwSolution(inputData[0], inputData[1], subProblemsSolution)
