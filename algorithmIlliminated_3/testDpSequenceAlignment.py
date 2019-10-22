@@ -1,4 +1,4 @@
-from algorithmIlliminated_3.DpSequenceAlignment import *
+from algorithmIlliminated_3.dpSequenceAlignment import *
 
 import unittest
 
