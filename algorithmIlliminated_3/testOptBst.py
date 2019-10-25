@@ -9,7 +9,7 @@ class OptBstTestCase(unittest.TestCase):
         for i in range(len(frequencies)):
             node = Node(i + 1, frequencies[i])
             nodes.append(node)
-        subProblems = optBst.solveOptBst(nodes)
+        subProblems = optBst.solveOptBst_n3(nodes)
         print(subProblems)
 
 
