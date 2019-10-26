@@ -42,7 +42,6 @@ class OptBst:
                 subProblemsSolution[i][i + size - 1] = sumFrequency + minSubs
         return subProblemsSolution
 
-
     def solveOptBst_n2(self, nodes: list):
         for i in range(1, len(nodes) + 1):
             assert(i == nodes[i - 1].key)
