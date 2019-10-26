@@ -30,6 +30,7 @@ class OptBstTestCase(unittest.TestCase):
             self.assertTrue(subProblems[1][len(nodes)].totalSum == totalSum)
 
             root = optBst.constructOptBST(subProblems, nodes, 1, len(nodes))
+            self.assertTrue(root.key == rootKey)
             print(root)
             if root.left is None:
                 self.assertTrue(leftChildKey is None)
