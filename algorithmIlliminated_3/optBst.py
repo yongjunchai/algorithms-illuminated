@@ -13,7 +13,7 @@ class Node:
 class RootNode:
     def __init__(self, key, totalSum):
         self.key = key
-        self.sum = totalSum
+        self.totalSum = totalSum
 
 
 class OptBst:
@@ -52,36 +52,37 @@ class OptBst:
         frequencySums = Utils.createArray([len(nodes), len(nodes)])
         # base case, size == 1
         for i in range(len(nodes)):
-            frequencySums[i][0] = nodes[i].frequency
+            frequencySums[i][i] = nodes[i].frequency
         for i in range(len(nodes)):
-            for size in range(2, len(nodes) + 1):
-                frequencySums[i][i + size - 1] = frequencySums[i][i + size - 2] + nodes[i + size - 1]
+            for size in range(2, len(nodes) - i + 1):
+                frequencySums[i][i + size - 1] = frequencySums[i][i + size - 2] + nodes[i + size - 1].frequency
 
         # prepare for subProblemsSum
-        subProblemsSum = Utils.createArray([len(nodes), len(nodes)])
+        subProblemsSum = Utils.createArray([len(nodes) + 2, len(nodes) + 1])
         # base case, size == 1
-        for i in range(len(nodes)):
-            subProblemsSum[i][0] = RootNode(nodes[i].key, nodes[i].frequency)
-        for i in range(len(nodes)):
-            for size in range(2, len(nodes) + 1):
+        for i in range(1, len(nodes) + 1):
+            subProblemsSum[i][i] = RootNode(nodes[i - 1].key, nodes[i - 1].frequency)
+        for i in range(1, len(nodes) + 2):
+            subProblemsSum[i][i - 1] = RootNode(0, 0)
+        for size in range(2, len(nodes) + 1):
+            for i in range(1, len(nodes) - size + 1 + 1):
                 minRoot = subProblemsSum[i][i + size - 1 - 1]
                 maxRoot = subProblemsSum[i + 1][i + size - 1]
                 minSubRoot = RootNode(0, sys.maxsize)
-                for j in range(minRoot.key - 1, maxRoot.key):
-                    value = subProblemsSum[i][j - 1].totalSum + subProblemsSum[i + 1][j].totalSum
-                    if value < minSubRoot.sum:
-                        minSubRoot.key = j + 1
+                for j in range(minRoot.key, maxRoot.key + 1):
+                    value = subProblemsSum[i][j - 1].totalSum + subProblemsSum[j + 1][i + size - 1].totalSum
+                    if value < minSubRoot.totalSum:
+                        minSubRoot.key = j
                         minSubRoot.totalSum = value
                 subProblemsSum[i][i + size - 1] = minSubRoot
 
         # subproblems (i indexed from 1 to n + 1, j indexed from 0 to n - 1)
         subProblems = Utils.createArray([len(nodes) + 2, len(nodes) + 1])
-        # base case
-        for i in range(1, len(nodes) + 2):
-            subProblems[i][i - 1] = 0
         for size in range(1, len(nodes) + 1):
-            for i in range(1, len(nodes) + 1 - size + 1):
-                subProblems[i][i + size - 1] = frequencySums[i - 1][i - 1 + size - 1] + subProblemsSum[i - 1][i - 1 + size - 1]
+            for i in range(1, len(nodes) - size + 1 + 1):
+                rootNode = RootNode(subProblemsSum[i][i + size - 1].key, subProblemsSum[i][i + size - 1].totalSum)
+                rootNode.totalSum = rootNode.totalSum + frequencySums[i - 1][i + size - 1 - 1]
+                subProblems[i][i + size - 1] = rootNode
         return subProblems
 
     def constructOptBST(self, subProblems, nodes: list, left: int, right: int):
@@ -90,9 +91,9 @@ class OptBst:
         :param nodes:
         :param left: index of nodes
         :param right: index of nodes
-        :return: root node the OptBST tree
+        :return: root node of the OptBST tree
         """
-        assert(0 < left < len(nodes))
+        assert(0 <= left < len(nodes))
         if left > right:
             return None
         if left == right:
