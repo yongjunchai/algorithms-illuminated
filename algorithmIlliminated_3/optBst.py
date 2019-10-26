@@ -6,6 +6,8 @@ class Node:
     def __init__(self, key, frequency):
         self.key = key
         self.frequency = frequency
+        self.left = None
+        self.right = None
 
 
 class RootNode:
@@ -81,5 +83,25 @@ class OptBst:
             for i in range(1, len(nodes) + 1 - size + 1):
                 subProblems[i][i + size - 1] = frequencySums[i - 1][i - 1 + size - 1] + subProblemsSum[i - 1][i - 1 + size - 1]
         return subProblems
+
+    def constructOptBST(self, subProblems, nodes: list, left: int, right: int):
+        """
+        :param subProblems: subproblems (i indexed from 1 to n + 1, j indexed from 0 to n - 1)
+        :param nodes:
+        :param left: index of nodes
+        :param right: index of nodes
+        :return: root node the OptBST tree
+        """
+        assert(0 < left < len(nodes))
+        if left > right:
+            return None
+        if left == right:
+            return nodes[left]
+        rootNode = subProblems[left + 1][right]
+        node = Node(rootNode.key, nodes[rootNode.key - 1].frequency)
+        node.left = self.constructOptBST(subProblems, nodes, left, rootNode.key - 2)
+        node.right = self.constructOptBST(subProblems, nodes, rootNode.key, right)
+        return node
+
 
 
