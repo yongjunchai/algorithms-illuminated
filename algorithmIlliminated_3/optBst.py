@@ -74,16 +74,9 @@ class OptBst:
                     if value < minSubRoot.totalSum:
                         minSubRoot.key = j
                         minSubRoot.totalSum = value
+                minSubRoot.totalSum = minSubRoot.totalSum + frequencySums[i - 1][i + size - 1 - 1]
                 subProblemsSum[i][i + size - 1] = minSubRoot
-
-        # subproblems (i indexed from 1 to n + 1, j indexed from 0 to n - 1)
-        subProblems = Utils.createArray([len(nodes) + 2, len(nodes) + 1])
-        for size in range(1, len(nodes) + 1):
-            for i in range(1, len(nodes) - size + 1 + 1):
-                rootNode = RootNode(subProblemsSum[i][i + size - 1].key, subProblemsSum[i][i + size - 1].totalSum)
-                rootNode.totalSum = rootNode.totalSum + frequencySums[i - 1][i + size - 1 - 1]
-                subProblems[i][i + size - 1] = rootNode
-        return subProblems
+        return subProblemsSum
 
     def constructOptBST(self, subProblems, nodes: list, left: int, right: int):
         """
