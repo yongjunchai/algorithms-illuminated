@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 from algorithmIlliminated_3.utils import *
 
 class Node:
@@ -38,54 +39,111 @@ class Graph:
             node.addInflowEdge(edge.srcNodeName, edge.edgeLength)
 
 
+class Solution:
+    def __init__(self, length, inflowNodeName):
+        self.length = length
+        self.inflowNodeName = inflowNodeName
+
+
+class Path:
+    def __init__(self):
+        self.length = 0
+        self.path = deque()
 
 class BellmanFord:
     def __init__(self):
         pass
 
     def findShortestPath(self, sourceNodeName: str, graph: Graph):
-        steps = len(graph.nodes) + 1
-        vertexes = len(graph.nodes)
+        maxSteps = len(graph.nodes)
+        vertexesCnt = len(graph.nodes)
         keys = graph.nodes.keys()
         nodes = list()
         nameIndexMap = dict()
+        i = 0
+        indexOfSourceNode = -1
         for key in keys:
             nodes.append(key)
-        indexOfSourceNode = -1
-        for i in range(0, len(nodes)):
-            nameIndexMap[nodes[i]] = i
-            if nodes[i] == sourceNodeName:
+            nameIndexMap[key] = i
+            if key == sourceNodeName:
                 indexOfSourceNode = i
-                break
-        assert(indexOfSourceNode > 0)
-        subProblemsSolution = Utils.createArray([steps, vertexes])
+            i = i + 1
+
+        assert(indexOfSourceNode >= 0)
+        subProblemsSolution = Utils.createArray([maxSteps + 1, vertexesCnt])
 
         # base case
-        subProblemsSolution[0][indexOfSourceNode] = 0
+        subProblemsSolution[0][indexOfSourceNode] = Solution(0, None)
         for i in range(0, len(nodes)):
             if i == indexOfSourceNode:
                 continue
-            subProblemsSolution[0][i] = sys.maxsize
+            subProblemsSolution[0][i] = Solution(sys.maxsize, None)
 
-        for i in range(1, steps):
+        for i in range(1, maxSteps + 1):
             stable = True
             for j in range(0, len(nodes)):
                 if j == indexOfSourceNode:
+                    subProblemsSolution[i][indexOfSourceNode] = Solution(0, None)
                     continue
-                minLen = subProblemsSolution[i - 1][j]
+                minLen = subProblemsSolution[i - 1][j].length
+                minInflowNodeName = subProblemsSolution[i - 1][j].inflowNodeName
                 for edge in graph.nodes[nodes[j]].inflowEdges.items():
                     inflowNodeName = edge[0]
                     edgeLength = edge[1]
                     inflowNodeIndex = nameIndexMap[inflowNodeName]
-                    length = subProblemsSolution[i - 1][inflowNodeIndex] + edgeLength
+                    length = subProblemsSolution[i - 1][inflowNodeIndex].length + edgeLength
                     if length < minLen:
                         minLen = length
-                subProblemsSolution[i][j] = minLen
-                if subProblemsSolution[i][j] != subProblemsSolution[i - 1][j]:
+                        minInflowNodeName = inflowNodeName
+                subProblemsSolution[i][j] = Solution(minLen,  minInflowNodeName)
+                if subProblemsSolution[i][j].length != subProblemsSolution[i - 1][j].length:
                     stable = False
             if stable:
-                return subProblemsSolution
-        return None
+                return subProblemsSolution, i
+        return None, None
+
+    def constructSolution(self, sourceNodeName: str, graph: Graph, subProblemsSolution, stableStep: int):
+        maxSteps = len(graph.nodes)
+        vertexesCnt = len(graph.nodes)
+        keys = graph.nodes.keys()
+        nodes = list()
+        nameIndexMap = dict()
+        i = 0
+        indexOfSourceNode = -1
+        for key in keys:
+            nodes.append(key)
+            nameIndexMap[key] = i
+            if key == sourceNodeName:
+                indexOfSourceNode = i
+            i = i + 1
+
+        assert(indexOfSourceNode >= 0)
+        assert(maxSteps == len(subProblemsSolution) - 1)
+        assert(vertexesCnt == len(subProblemsSolution[0]))
+        paths = dict()
+        for item in nameIndexMap.items():
+            key = item[0]
+            index = item[1]
+            if key == sourceNodeName:
+                continue
+            path = Path()
+            paths[key] = path
+            curStep = stableStep
+            path.length = subProblemsSolution[curStep][index].length
+            path.path.appendleft(key)
+            while curStep > 0:
+                # skip un-needed steps
+                if subProblemsSolution[curStep][index].length == subProblemsSolution[curStep - 1][index].length:
+                    curStep = curStep - 1
+                    continue
+                key = subProblemsSolution[curStep][index].inflowNodeName
+                index = nameIndexMap[key]
+                path.path.appendleft(key)
+                curStep = curStep - 1
+        return paths
+
+
+
 
 
 
