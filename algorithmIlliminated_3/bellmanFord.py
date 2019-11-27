@@ -2,53 +2,7 @@ import sys
 from collections import deque
 from algorithmIlliminated_3.utils import *
 
-class Node:
-    def __init__(self, nodeName: str):
-        self.name = nodeName
-        self.inflowEdges = dict()
 
-    def addInflowEdge(self, inflowNodeName: str, edgeLength: int):
-        """
-        only keep the shorted edge from the same node
-        :param inflowNodeName:
-        :param edgeLength:
-        :return:
-        """
-        existingEdgeLen = self.inflowEdges.get(inflowNodeName)
-        if existingEdgeLen is not None:
-            if existingEdgeLen < edgeLength:
-                return
-        self.inflowEdges[inflowNodeName] = edgeLength
-
-
-class Edge:
-    def __init__(self, srcNodeName: str, targetNodeName: str, edgeLength: int):
-        self.srcNodeName = srcNodeName
-        self.targetNodeName = targetNodeName
-        self.edgeLength = edgeLength
-
-
-class Graph:
-    def __init__(self, edges: list):
-        self.nodes = dict()
-        for edge in edges:
-            node = self.nodes.get(edge.targetNodeName)
-            if node is None:
-                node = Node(edge.targetNodeName)
-                self.nodes[edge.targetNodeName] = node
-            node.addInflowEdge(edge.srcNodeName, edge.edgeLength)
-
-
-class Solution:
-    def __init__(self, length, inflowNodeName):
-        self.length = length
-        self.inflowNodeName = inflowNodeName
-
-
-class Path:
-    def __init__(self):
-        self.length = 0
-        self.path = deque()
 
 class BellmanFord:
     def __init__(self):

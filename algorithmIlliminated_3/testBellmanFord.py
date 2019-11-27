@@ -68,6 +68,7 @@ class BellmanFordTest(unittest.TestCase):
             if len(expectedPaths) == 0:
                 self.assertTrue(subProblemsSolution is None)
                 self.assertTrue(stableStep is None)
+                print("negative cycle detected")
                 continue
             self.assertTrue(subProblemsSolution is not None)
             self.assertTrue(stableStep is not None)
