@@ -1,5 +1,5 @@
 import unittest
-from algorithmIlliminated_3.utils import *
+from utils.utils import *
 
 
 class UtilsTestCase(unittest.TestCase):
