@@ -1,4 +1,5 @@
 from collections import deque
+from inspect import currentframe, getframeinfo
 
 
 class Utils:
@@ -65,6 +66,10 @@ class Node:
     def __init__(self, nodeName: str):
         self.name = nodeName
         self.inflowEdges = dict()
+        self.outflowEdges = dict()
+        self.visited = False
+        self.topoOrderVal = None
+        self.numScc = None
 
     def addInflowEdge(self, inflowNodeName: str, edgeLength: int):
         """
@@ -79,6 +84,12 @@ class Node:
                 return
         self.inflowEdges[inflowNodeName] = edgeLength
 
+    def addOutflowEdge(self, outflowNodeName: str, edgeLength: int):
+        existingEdgeLen = self.outflowEdges.get(outflowNodeName)
+        if existingEdgeLen is not None:
+            if existingEdgeLen < edgeLength:
+                return
+        self.outflowEdges[outflowNodeName] = edgeLength
 
 class Edge:
     def __init__(self, srcNodeName: str, targetNodeName: str, edgeLength: int):
@@ -108,3 +119,8 @@ class Path:
     def __init__(self):
         self.length = 0
         self.path = deque()
+
+
+def get_linenumber():
+    cf = currentframe()
+    return cf.f_back.f_lineno
