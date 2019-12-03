@@ -2,7 +2,7 @@ from collections import deque
 from utils.utils import *
 
 
-class Graph:
+class GraphSearch:
     def __init__(self):
         pass
 
@@ -79,6 +79,17 @@ class Graph:
                 continue
             numSCC = numSCC + 1
             self.dfsScc(node, numSCC, graph)
+        sccs = dict()
+        for node in nodesOrdered:
+            if node.numScc is None:
+                print("no scc for [%s] node" % node.name)
+                continue
+            scc = sccs.get(str(node.numScc))
+            if scc is None:
+                scc = list()
+                sccs[str(node.numScc)] = scc
+            scc. append(node.name)
+        return sccs
 
     def dfsScc(self, node: Node, numScc: int, graph: Graph):
         node.visited = True
@@ -114,12 +125,14 @@ class Graph:
         else:
             edges = node.outflowEdges
         if edges is not None:
-            for name in edges.values():
+            for name in edges.keys():
                 curNode = graph.nodes.get(name)
                 if curNode is None:
                     print("Error: node not in the graph: %s" % name)
                     continue
-                curLabel = self.dfsTopo(curNode, curLabel, graph)
+                if curNode.visited:
+                    continue
+                curLabel = self.dfsTopo(curNode, curLabel, graph, reverse, nodesOrdered)
         node.topoOrderVal = curLabel
         nodesOrdered.appendleft(node)
         curLabel = curLabel - 1

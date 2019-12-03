@@ -102,11 +102,17 @@ class Graph:
     def __init__(self, edges: list):
         self.nodes = dict()
         for edge in edges:
-            node = self.nodes.get(edge.targetNodeName)
-            if node is None:
-                node = Node(edge.targetNodeName)
-                self.nodes[edge.targetNodeName] = node
-            node.addInflowEdge(edge.srcNodeName, edge.edgeLength)
+            targetNode = self.nodes.get(edge.targetNodeName)
+            if targetNode is None:
+                targetNode = Node(edge.targetNodeName)
+                self.nodes[edge.targetNodeName] = targetNode
+            targetNode.addInflowEdge(edge.srcNodeName, edge.edgeLength)
+
+            srcNode = self.nodes.get(edge.srcNodeName)
+            if srcNode is None:
+                srcNode = Node(edge.srcNodeName)
+                self.nodes[edge.srcNodeName] = srcNode
+            srcNode.addOutflowEdge(edge.targetNodeName, edge.edgeLength)
 
 
 class Solution:
