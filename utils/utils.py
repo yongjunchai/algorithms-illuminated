@@ -1,10 +1,10 @@
 from collections import deque
 from inspect import currentframe, getframeinfo
-
+import copy
 
 class Utils:
     @staticmethod
-    def createArray_internal(dimensions: list, index: int, root):
+    def createArray_internal(dimensions: list, index: int, root, defaultVal = None):
         if index >= len(dimensions):
             return
         if root is None:
@@ -12,16 +12,16 @@ class Utils:
         items = dimensions[index]
         isLastDimension = (len(dimensions) - 1) == index
         for i in range(items):
-            value = None
+            value = copy.deepcopy(defaultVal)
             if not isLastDimension:
                 value = []
             root.append(value)
-            Utils.createArray_internal(dimensions, index + 1, value)
+            Utils.createArray_internal(dimensions, index + 1, value, defaultVal)
         return root
 
     @staticmethod
-    def  createArray(dimensions: list):
-        return Utils.createArray_internal(dimensions, 0, [])
+    def createArray(dimensions: list, defaultVal = None):
+        return Utils.createArray_internal(dimensions, 0, [], defaultVal)
 
     @staticmethod
     def getValue(arr: list, indices: list):
@@ -60,6 +60,13 @@ class Utils:
                 Utils.updateSlot(slot[i], value)
             else:
                slot[i] = value
+
+    @staticmethod
+    def dumpMatrix(m, rows, columns, fn=lambda a: a):
+        for i in range(0, rows):
+            for j in range(0, columns):
+                print("%5d" % fn(m[i][j]), end="")
+            print("")
 
 
 class Node:
