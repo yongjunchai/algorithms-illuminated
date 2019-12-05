@@ -65,7 +65,10 @@ class Utils:
     def dumpMatrix(m, rows, columns, fn=lambda a: a):
         for i in range(0, rows):
             for j in range(0, columns):
-                print("%5d" % fn(m[i][j]), end="")
+                value = fn(m[i][j])
+                if value is None:
+                    value = "-"
+                print("%5s" % value, end="")
             print("")
 
 
