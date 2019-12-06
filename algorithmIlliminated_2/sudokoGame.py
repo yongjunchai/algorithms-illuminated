@@ -4,12 +4,6 @@ import random
 from collections import deque
 
 
-class Level(Enum):
-    EASY = 1
-    NORMAL = 2
-    HARD = 3
-
-
 class Item:
     def __init__(self):
         self.name = None
@@ -19,14 +13,7 @@ class Item:
         self.column = None
 
 
-class Config:
-    def __init__(self):
-        self.level = Level.EASY
-
-
 class SudokoGame:
-    def __init__(self):
-        self.config = Config()
 
     def getConnectedItems(self, board, row, column):
         # connect items of same row
@@ -54,38 +41,43 @@ class SudokoGame:
         """
         create a new 9 * 9 sudoko board/graph with board item relationship set up
         """
-        board = Utils.createArray([9, 9], Item())
+        board = Utils.createArray([9, 9])
+        for i in range(0, 9):
+            for j in range(0, 9):
+                curItem = Item()
+                curItem.row = i
+                curItem.column = j
+                board[i][j] = curItem
+
         for i in range(0, 9):
             for j in range(0, 9):
                 curItem : Item = board[i][j]
-                curItem.row = i
-                curItem.column = j
                 curItem.connectedItems = self.getConnectedItems(board, i, j)
         return board
 
-    def pickRndValue(self, item: Item):
-        assert(len(item.possibleValues) > 0)
-        item.name = item.possibleValues[int(len(item.possibleValues) * random.random())]
-        item.possibleValues.clear()
-        item.possibleValues.append(item.name)
-
-    def updateGraph_DFS_Recursive(self, item: Item):
+    def updateGraph_DFS_Recursive(self, item: Item, board):
         for connectedItem in item.connectedItems:
-            assert(len(connectedItem.possibleValues) > 0)
             if connectedItem.possibleValues.count(item.name) > 0:
                 connectedItem.possibleValues.remove(item.name)
                 if len(connectedItem.possibleValues) == 1:
                     connectedItem.name = connectedItem.possibleValues[0]
-                    self.updateGraph_DFS_Recursive(connectedItem)
+                    self.updateGraph_DFS_Recursive(connectedItem, board)
 
     def verifyBoard(self, board):
         for i in range(0, 9):
             for j in range(0, 9):
                 item: Item = board[i][j]
-                assert(len(item.possibleValues) == 1)
-                assert(item.possibleValues[0] == item.name)
-                for connectedItem in item.connectedItems:
-                    assert(connectedItem.name != item.name)
+                if len(item.possibleValues) == 0:
+                    return False
+                if item.name is not None:
+                    if len(item.possibleValues) != 1:
+                        return False
+                    if item.possibleValues[0] != item.name:
+                        return False
+                    for connectedItem in item.connectedItems:
+                        if connectedItem.name == item.name:
+                            return False
+        return True
 
     def isBoardAllFilled(self, board):
         for i in range(0, 9):
@@ -95,37 +87,51 @@ class SudokoGame:
                     return False
         return True
 
-
     def startNewGame(self):
         board = self.createEmptyBorad()
         Utils.dumpMatrix(board, 9, 9, lambda item: item.name)
 
-        # based on level set init filled values on board
-        itemsToFill = 0
-        if self.config.level == Level.EASY:
-            itemsToFill = 50
-        elif self.config.level == Level.NORMAL:
-            itemsToFill = 40
-        else:
-            itemsToFill = 20
+        nums = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        random.shuffle(nums)
 
-        isBoardAllFilled = False
-        step = 0
-        while isBoardAllFilled is False:
-            row = int(9 * random.random())
-            col = int(9 * random.random())
-            curItem : Item = board[row][col]
-            if curItem.name is not None:
-                continue
-            step = step + 1
-            self.pickRndValue(curItem)
-            self.updateGraph_DFS_Recursive(curItem)
-            print("[%d] step: pick up new item (%d, %d) =  %s " % (step, row + 1, col + 1, curItem.name))
-            Utils.dumpMatrix(board, 9, 9, lambda item: item.name)
-            isBoardAllFilled = self.isBoardAllFilled(board)
+        # fill 3 diagonal 3 * 3 box first
+        for c in range(0, 3):
+            start = c * 3
+            ii = 0
+            for i in range(start, start + 3):
+                for j in range(start, start + 3):
+                    item: Item = board[i][j]
+                    ii = ii + 1
+                    item.name = nums[ii - 1]
+                    item.possibleValues.clear()
+                    item.possibleValues.append(item.name)
+                    self.updateGraph_DFS_Recursive(item, board)
 
-        self.verifyBoard(board)
+        # fill rest of matrices
+        for iStart in range(0, 3):
+            for jStart in range(0, 3):
+                checkItem: Item = board[iStart * 3][jStart * 3]
+                if checkItem.name is not None:
+                    continue
+                for i in range(iStart * 3, iStart * 3 + 3):
+                    for j in range(jStart * 3, jStart * 3 + 3):
+                        # create a temporary board to find out the good value to fill the board
+                        tempBoard = copy.deepcopy(board)
+                        item: Item = tempBoard[i][j]
+                        for value in item.possibleValues:
+                            item.name = value
+                            item.possibleValues.clear()
+                            item.possibleValues.append(item.name)
+                            self.updateGraph_DFS_Recursive(item, tempBoard)
+                            if self.verifyBoard(tempBoard):
+                                board = tempBoard
+                                break
 
+        print("final board")
+        Utils.dumpMatrix(board, 9, 9, lambda item: item.name)
+        assert(self.verifyBoard(board))
+
+        # assert(self.isBoardAllFilled(board))
 
 sudokoGame = SudokoGame()
 for i in range(100):
