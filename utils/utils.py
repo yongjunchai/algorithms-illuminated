@@ -2,6 +2,10 @@ from collections import deque
 from inspect import currentframe, getframeinfo
 import copy
 
+import time
+
+current_milli_time = lambda: int(round(time.time() * 1000))
+
 class Utils:
     @staticmethod
     def createArray_internal(dimensions: list, index: int, root, defaultVal = None):
@@ -12,9 +16,12 @@ class Utils:
         items = dimensions[index]
         isLastDimension = (len(dimensions) - 1) == index
         for i in range(items):
-            value = copy.deepcopy(defaultVal)
+            value = None
             if not isLastDimension:
                 value = []
+            else:
+                if defaultVal is not None:
+                    value = copy.deepcopy(defaultVal)
             root.append(value)
             Utils.createArray_internal(dimensions, index + 1, value, defaultVal)
         return root
