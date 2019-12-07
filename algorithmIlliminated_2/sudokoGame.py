@@ -52,13 +52,44 @@ class SudokoGame:
                 curItem.connectedItems = self.getConnectedItems(board, i, j)
         return board
 
-    def updateGraph_DFS_Recursive(self, item: Item, board):
+    def updateGraph_DFS_Recursive(self, item: Item):
         for connectedItem in item.connectedItems:
             if connectedItem.possibleValues.count(item.name) > 0:
                 connectedItem.possibleValues.remove(item.name)
                 if len(connectedItem.possibleValues) == 1:
                     connectedItem.name = connectedItem.possibleValues[0]
-                    self.updateGraph_DFS_Recursive(connectedItem, board)
+                    self.updateGraph_DFS_Recursive(connectedItem)
+
+    def updateGraph_DFS_Iterative(self, item: Item):
+        stack = deque()
+        for connectedItem in item.connectedItems:
+            stack.append((connectedItem, item.name))
+        while len(stack) > 0:
+            t = stack.pop()
+            curItem: Item = t[0]
+            valueToRemove = t[1]
+            if curItem.possibleValues.count(valueToRemove) > 0:
+                curItem.possibleValues.remove(valueToRemove)
+                if len(curItem.possibleValues) == 1:
+                    curItem.name = curItem.possibleValues[0]
+                    for connectedItem in curItem.connectedItems:
+                        stack.append((connectedItem, curItem.name))
+
+    def updateGraph_BFS_Iterative(self, item: Item):
+        queue = deque()
+        for connectedItem in item.connectedItems:
+            queue.append((connectedItem, item.name))
+        while len(queue) > 0:
+            t = queue.popleft()
+            curItem: Item = t[0]
+            valueToRemove = t[1]
+            if curItem.possibleValues.count(valueToRemove) > 0:
+                curItem.possibleValues.remove(valueToRemove)
+                if len(curItem.possibleValues) == 1:
+                    curItem.name = curItem.possibleValues[0]
+                    for connectedItem in curItem.connectedItems:
+                        queue.append((connectedItem, curItem.name))
+
 
     def verifyBoard(self, board):
         for i in range(0, 9):
@@ -131,7 +162,7 @@ class SudokoGame:
                     ii = ii + 1
                     item.possibleValues.clear()
                     item.possibleValues.append(item.name)
-                    self.updateGraph_DFS_Recursive(item, board)
+                    self.updateGraph_BFS_Iterative(item)
         self.fillRemaining(0, 0, 0, 0, board)
         print("final board")
         Utils.dumpMatrix(board, 9, 9, lambda item: item.name)
