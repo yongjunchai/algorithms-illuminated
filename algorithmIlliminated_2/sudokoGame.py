@@ -12,6 +12,13 @@ class Item:
         self.row = None
         self.column = None
 
+class Parameter:
+    def __init__(self, startI: int, startJ: int, i: int, j: int, index: int):
+        self.startI = startI
+        self.startJ = startJ
+        self.i = i
+        self.j = j
+        self.index = index
 
 class SudokoGame:
     def __init__(self):
@@ -98,10 +105,6 @@ class SudokoGame:
                 if len(item.possibleValues) == 0:
                     return False
                 if item.name is not None:
-                    if len(item.possibleValues) != 1:
-                        return False
-                    if item.possibleValues[0] != item.name:
-                        return False
                     for connectedItem in item.connectedItems:
                         if connectedItem.name == item.name:
                             return False
@@ -145,6 +148,46 @@ class SudokoGame:
                 break
             item.name = None
         return item.name is not None
+
+    def fillRemaining_iterative(self, board):
+        stack = deque()
+        stack.append(Parameter(0, 0, 0, 0, 0))
+        while len(stack) > 0:
+            parameter = stack.pop()
+            startI = parameter.startI
+            startJ = parameter.startJ
+            i = parameter.i
+            j = parameter.j
+            index = parameter.index
+            if j > 2:
+                i = i + 1
+                j = 0
+            if i > 2:
+                startJ = startJ + 1
+                i = 0
+            if startI == startJ:
+                startJ = startJ + 1
+            if startJ > 2:
+                startI = startI + 1
+                startJ = 0
+            if startI > 2:
+                return
+
+            item: Item = board[startI * 3 + i][startJ * 3 + j]
+            if index > len(item.possibleValues) - 1:
+                item.name = None
+                continue
+            stack.append(Parameter(startI, startJ, i, j, index + 1))
+            value = item.possibleValues[index]
+            isGoodToFit = True
+            for connectedItem in item.connectedItems:
+                if value == connectedItem.name:
+                    isGoodToFit = False
+                    break
+            if not isGoodToFit:
+                continue
+            item.name = value
+            stack.append(Parameter(startI, startJ, i, j + 1, 0))
 
     def startNewGame(self):
         board = self.createEmptyBorad()
