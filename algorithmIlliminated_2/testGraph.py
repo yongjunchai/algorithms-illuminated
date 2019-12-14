@@ -37,5 +37,17 @@ class GraphTestCase(unittest.TestCase):
             sccR = sccResult.get(scc[0])
             self.assertTrue(sorted(sccR) == sorted(scc[1]))
 
+    def test_sccKosaraju_iterative(self):
+        graphSearch = GraphSearch()
+
+        testData = self.getTestData_2()
+        sccResult = graphSearch.detectSCC_kosaraju_iterative(testData[0])
+        sccs = testData[1]
+        self.assertTrue(len(sccResult) == len(sccs))
+        for scc in sccs.items():
+            sccR = sccResult.get(scc[0])
+            self.assertTrue(sorted(sccR) == sorted(scc[1]))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -137,3 +137,94 @@ class GraphSearch:
         nodesOrdered.appendleft(node)
         curLabel = curLabel - 1
         return curLabel
+
+    def detectSCC_kosaraju_iterative(self, graph: Graph):
+        for node in graph.nodes.values():
+            node.visited = False
+        nodesOrdered = deque()
+        self.topoSort_iterative(graph, True, nodesOrdered)
+        for node in graph.nodes.values():
+            node.visited = False
+        numSCC = 0
+        for node in nodesOrdered:
+            if node.visited:
+                continue
+            numSCC = numSCC + 1
+            self.dfsSccIterative(node, numSCC, graph)
+        sccs = dict()
+        for node in nodesOrdered:
+            if node.numScc is None:
+                print("no scc for [%s] node" % node.name)
+                continue
+            scc = sccs.get(str(node.numScc))
+            if scc is None:
+                scc = list()
+                sccs[str(node.numScc)] = scc
+            scc. append(node.name)
+        return sccs
+
+
+    def dfsSccIterative(self, node: Node, numScc: int, graph: Graph):
+        stack = deque()
+        stack.append(node)
+        while len(stack) > 0:
+            curNode: Node = stack.pop()
+            if curNode.visited:
+                continue
+            curNode.visited = True
+            curNode.numScc = numScc
+            for name in curNode.outflowEdges.keys():
+                tempNode = graph.nodes.get(name)
+                if tempNode is None:
+                    print("Error %d: node not in the graph: %s" % (get_linenumber(), name))
+                    continue
+                if tempNode.visited:
+                    continue
+                stack.append(tempNode)
+
+
+
+    def topoSort_iterative(self, graph: Graph, reverse: bool, nodesOrdered: deque):
+        """
+        the f-value of vertices constitute a topological ordering of G
+        :param graph:
+        :return:
+        """
+        for node in graph.nodes.values():
+            node.visited = False
+        curLabel: int = len(graph.nodes)
+        for node in graph.nodes.values():
+            if node.visited:
+                continue
+            curLabel = self.dfsTopo_iterative(node, curLabel, graph, reverse, nodesOrdered)
+
+    def dfsTopo_iterative(self, node: Node, curLabel: int, graph: Graph, reverse: bool, nodesOrdered: deque):
+        stack = deque()
+        stack.append(node)
+        while len(stack) > 0:
+            curNode: Node = stack.pop()
+            if curNode.visited:
+                if curNode.topoOrderVal is not None:
+                    # in cyclical graph, same node may be pushed to stack multiple times
+                    continue
+                curNode.topoOrderVal = curLabel
+                nodesOrdered.appendleft(curNode)
+                curLabel = curLabel - 1
+            else:
+                curNode.visited = True
+                stack.append(curNode)
+                edges = None
+                if reverse:
+                    edges = curNode.inflowEdges
+                else:
+                    edges = curNode.outflowEdges
+                if edges is not None:
+                    for name in edges.keys():
+                        tempNode = graph.nodes.get(name)
+                        if tempNode is None:
+                            print("Error: node not in the graph: %s" % name)
+                            continue
+                        if tempNode.visited:
+                            continue
+                        stack.append(tempNode)
+        return curLabel
