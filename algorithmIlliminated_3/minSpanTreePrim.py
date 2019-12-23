@@ -5,7 +5,7 @@ list representation of the graph
 # A class to represent the adjacency list of the node
 from collections import defaultdict
 import sys
-from algorithmIlliminated_3.heap import *
+from utils.heap import *
 
 
 class Node:
