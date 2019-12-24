@@ -82,11 +82,13 @@ class Utils:
 class Node:
     def __init__(self, nodeName: str):
         self.name = nodeName
-        self.inflowEdges = dict()
-        self.outflowEdges = dict()
-        self.visited = False
-        self.topoOrderVal = None
-        self.numScc = None
+        self.inflowEdges: dict = dict()
+        self.outflowEdges: dict = dict()
+        self.visited: bool = False
+        self.topoOrderVal: int = None
+        self.numScc: int = None
+        self.predecessor: Node = None
+        self.dist: int = None
 
     def addInflowEdge(self, inflowNodeName: str, edgeLength: int):
         """
