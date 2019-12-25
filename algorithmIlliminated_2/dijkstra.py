@@ -5,7 +5,7 @@ import sys
 
 class Dijkstra:
     def __init__(self):
-        pass
+        self.cnt = 0
 
     def updateHeap(self, graph: Graph, predecessor: Node, heap: Heap):
         for edgeItem in predecessor.outflowEdges.items():
@@ -19,7 +19,8 @@ class Dijkstra:
                 continue
             targetNode.predecessor = predecessor
             targetNode.dist = predecessor.dist + length
-            heap.insert(targetNode.dist, (targetNode.name + str(targetNode.dist), targetNode))
+            self.cnt = self.cnt + 1
+            heap.insert(targetNode.dist, (targetNode.name + str(self.cnt) + "_" + str(length), targetNode))
 
     def search(self, graph: Graph, vertexName: str):
         """
@@ -48,5 +49,6 @@ class Dijkstra:
             if node.visited:
                 continue
             node.visited = True
+            node.dist = key
             self.updateHeap(graph, node, heap)
         return graph
