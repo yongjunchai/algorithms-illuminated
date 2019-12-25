@@ -17,10 +17,8 @@ class Dijkstra:
                 continue
             if targetNode.visited:
                 continue
-            targetNode.predecessor = predecessor
-            targetNode.dist = predecessor.dist + length
             self.cnt = self.cnt + 1
-            heap.insert(targetNode.dist, (targetNode.name + str(self.cnt) + "_" + str(length), targetNode))
+            heap.insert(predecessor.dist + length, (targetNode.name + str(self.cnt), targetNode, predecessor))
 
     def search(self, graph: Graph, vertexName: str):
         """
@@ -46,9 +44,11 @@ class Dijkstra:
         while heap.size() > 0:
             key, value = heap.extractMin()
             node: Node = value[1]
+            predecessor = value[2]
             if node.visited:
                 continue
             node.visited = True
             node.dist = key
+            node.predecessor = predecessor
             self.updateHeap(graph, node, heap)
         return graph

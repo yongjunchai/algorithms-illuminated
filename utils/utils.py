@@ -141,9 +141,9 @@ class Solution:
 
 
 class Path:
-    def __init__(self):
-        self.length = 0
-        self.path = deque()
+    def __init__(self, length: int = 0, path: list = []):
+        self.length = length
+        self.path = deque(path)
 
 
 def get_linenumber():

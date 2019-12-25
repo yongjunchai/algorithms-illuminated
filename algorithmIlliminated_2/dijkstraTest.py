@@ -14,10 +14,10 @@ class DijkstraTest(unittest.TestCase):
         edges = [edge1, edge2, edge3, edge4, edge5]
         souceVertex = "s"
         dists = dict()
-        dists["s"] = 0
-        dists["v"] = 1
-        dists["w"] = 3
-        dists["t"] = 6
+        dists["s"] = Path(0, ["s"])
+        dists["v"] = Path(1, ["s", "v"])
+        dists["w"] = Path(3, ["s", "v", "w"])
+        dists["t"] = Path(6, ["s", "v", "w", "t"])
 
         graph = Graph(edges)
         return graph, souceVertex, dists
@@ -36,11 +36,11 @@ class DijkstraTest(unittest.TestCase):
         edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9]
         souceVertex = "s"
         dists = dict()
-        dists["s"] = 0
-        dists["v"] = 1
-        dists["w"] = 3
-        dists["t"] = 6
-        dists["x"] = 8
+        dists["s"] = Path(0, ["s"])
+        dists["v"] = Path(1, ["s", "v"])
+        dists["w"] = Path(3, ["s", "v", "w"])
+        dists["t"] = Path(6, ["s", "v", "w", "t"])
+        dists["x"] = Path(8, ["s", "v", "w", "t", "x"])
 
         graph = Graph(edges)
         return graph, souceVertex, dists
@@ -60,11 +60,11 @@ class DijkstraTest(unittest.TestCase):
         edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10]
         souceVertex = "s"
         dists = dict()
-        dists["s"] = 0
-        dists["v"] = 1
-        dists["w"] = 3
-        dists["t"] = 6
-        dists["x"] = 6
+        dists["s"] = Path(0, ["s"])
+        dists["v"] = Path(1, ["s", "v"])
+        dists["w"] = Path(3, ["s", "v", "w"])
+        dists["t"] = Path(6, ["s", "v", "w", "t"])
+        dists["x"] = Path(6, ["s", "v", "w", "x"])
 
         graph = Graph(edges)
         return graph, souceVertex, dists
@@ -72,6 +72,14 @@ class DijkstraTest(unittest.TestCase):
     def getTestData(self):
         dataSet = [self.getData1(), self.getData2(), self.getData3()]
         return dataSet
+
+    def verifyPah(self, path: deque, node: Node):
+        vertex = path.pop()
+        self.assertTrue(vertex == node.name)
+        if node.predecessor is None:
+            self.assertTrue(len(path) == 0)
+        else:
+            self.verifyPah(path, node.predecessor)
 
     def test_shortestFastPath(self):
         dijkstra = Dijkstra()
@@ -84,9 +92,10 @@ class DijkstraTest(unittest.TestCase):
             self.assertTrue(len(dists) == len(graph.nodes))
             for item in dists.items():
                 vertex = item[0]
-                length = item[1]
+                path = item[1]
                 node: Node = graph.nodes.get(vertex)
-                self.assertTrue(node.dist == length)
+                self.assertTrue(node.dist == path.length)
+                self.verifyPah(path.path, node)
 
 
 if __name__ == '__main__':
