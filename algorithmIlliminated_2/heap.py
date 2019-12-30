@@ -3,7 +3,7 @@ from collections import deque
 
 class Heap:
     """
-    this is an min heap
+    this is an array based min heap
     left child index: 2i + 1
     right child index: 2i + 2
     """
