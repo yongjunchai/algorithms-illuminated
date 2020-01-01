@@ -1,6 +1,7 @@
 import unittest
 import random
 from algorithmIlliminated_2.heap import Heap
+from utils.utils import *
 
 
 class MyTestCase(unittest.TestCase):
@@ -23,11 +24,13 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(i == item[0])
 
     def test_shuffle_heap_ops(self):
+        startMillSnds = current_milli_time()
         keys = []
-        cnt = 1024
+        cnt = 1024 * 10
         for i in range(4, cnt, 1):
             keys.append(i)
         random.shuffle(keys)
+
         heap = Heap()
         heap.buildHeap(self.buildItems(keys))
         item = heap.extract_min()
@@ -44,6 +47,8 @@ class MyTestCase(unittest.TestCase):
         for i in range(5, cnt, 1):
             item = heap.extract_min()
             self.assertTrue(i == item[0])
+        endMilliSnds = current_milli_time()
+        print("time used to process 10K heaps [%d] ms" % (endMilliSnds - startMillSnds))
 
 
 if __name__ == '__main__':
