@@ -2,6 +2,7 @@ import unittest
 from algorithmIlliminated_2.redBlackTree import *
 import random
 
+
 class MyTestCase(unittest.TestCase):
     def test_insert(self):
         redBlackTree = RedBlackTree()
@@ -56,8 +57,9 @@ class MyTestCase(unittest.TestCase):
         loop = 1
         while True:
             loop = loop + 1
-            if loop > 100:
+            if loop > 1000:
                 break
+            print("loop [%d]" % loop)
             redBlackTree = RedBlackTree()
             keys = []
             for i in range(cnt):
@@ -72,6 +74,7 @@ class MyTestCase(unittest.TestCase):
                 self.assertTrue(node.key == i)
                 self.assertTrue(node.value is True)
             self.verifyParentChildRelation(redBlackTree.root)
+
     def verifyParentChildRelation(self, curNode: TreeNode):
         if curNode is None:
             return
@@ -104,6 +107,7 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(node is not None)
             self.assertTrue(node.key == i)
             self.assertTrue(node.value is True)
+
 
 if __name__ == '__main__':
     unittest.main()

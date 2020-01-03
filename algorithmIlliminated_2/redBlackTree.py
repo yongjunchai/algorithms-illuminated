@@ -77,7 +77,6 @@ class RedBlackTree:
         else:
             p.right = child
 
-
     def rightRotate(self, node: TreeNode):
         leftChild = node.left
         if node.parent is None:
