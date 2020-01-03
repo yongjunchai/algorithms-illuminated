@@ -51,6 +51,8 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(node.key == key)
             self.assertTrue(node.value is True)
         self.verifyParentChildRelation(redBlackTree.root)
+        self.verifyNodeSize(redBlackTree.root)
+        self.assertTrue(cnt == redBlackTree.root.size)
 
     def test_insert_find(self):
         cnt = 10
@@ -108,6 +110,35 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(node.key == i)
             self.assertTrue(node.value is True)
 
+    def getSubTreeSize(self, node: TreeNode):
+        if node is None:
+            return 0
+        return 1 + self.getSubTreeSize(node.left) + self.getSubTreeSize(node.right)
+
+    def verifyNodeSize(self, node: TreeNode):
+        if node is None:
+            return
+        self.assertTrue(node.size == self.getSubTreeSize(node))
+        self.verifyNodeSize(node.left)
+        self.verifyNodeSize(node.right)
+
+    def test_dup(self):
+        keys = [0, 9, 7, 1, 2, 8, 3, 6, 4, 5, 5, 5, 5, 5]
+        redBlackTree = RedBlackTree()
+        for i in keys:
+            redBlackTree.insert(i, True)
+            self.verifyParentChildRelation(redBlackTree.root)
+
+        self.verifyParentChildRelation(redBlackTree.root)
+        for i in keys:
+            node: TreeNode = redBlackTree.searchEx(i)
+            self.assertTrue(node is not None)
+            self.assertTrue(node.key == i)
+            self.assertTrue(node.value is True)
+        self.assertTrue(14 == redBlackTree.root.size)
+        self.verifyNodeSize(redBlackTree.root)
+
 
 if __name__ == '__main__':
     unittest.main()
+

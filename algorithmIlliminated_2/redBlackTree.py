@@ -20,6 +20,7 @@ class TreeNode:
         self.color: Color = Color.RED
         self.key: int = None
         self.value: object = None
+        self.size = 1
 
 
 class RedBlackTree:
@@ -28,7 +29,7 @@ class RedBlackTree:
 
     def insert(self, key: int, value: object):
         """
-        insert <key, value> into the tree. The key is already in the tree, the value will be updated.
+        insert <key, value> into the tree. Duplicate key is allowed.
         :param key:
         :param value:
         :return:
@@ -57,6 +58,12 @@ class RedBlackTree:
         else:
             return g.left
 
+    """
+    about size update:
+    update the size of parent node when its left or right pointer point to different node:
+    1. minus the size of the original child: before the change
+    2. add the size of the new child: after the change
+    """
     def leftRotate(self, node: TreeNode):
         rightChild = node.right
         if node.parent is None:
@@ -64,10 +71,16 @@ class RedBlackTree:
         else:
             self.fix_parent(node, rightChild)
         rightChild.parent = node.parent
+        node.size = node.size - rightChild.size
         node.right = rightChild.left
+
         if rightChild.left is not None:
+            node.size = node.size + rightChild.left.size
+            rightChild.size = rightChild.size - rightChild.left.size
             rightChild.left.parent = node
+
         rightChild.left = node
+        rightChild.size = rightChild.size + node.size
         node.parent = rightChild
 
     def fix_parent(self, node: TreeNode, child: TreeNode):
@@ -84,10 +97,15 @@ class RedBlackTree:
         else:
             self.fix_parent(node, leftChild)
         leftChild.parent = node.parent
+        node.size = node.size - leftChild.size
         node.left = leftChild.right
         if leftChild.right is not None:
             leftChild.right.parent = node
+            node.size = node.size + leftChild.right.size
+            leftChild.size = leftChild.size - leftChild.right.size
+
         leftChild.right = node
+        leftChild.size = leftChild.size + node.size
         node.parent = leftChild
 
     def balanceNode(self, curNode: TreeNode):
@@ -141,9 +159,8 @@ class RedBlackTree:
                 g.color = Color.RED
 
     def insert_internal(self, curNode: TreeNode, key: int, value: object):
-        if curNode.key == key:
-            curNode.value = value
-        elif curNode.key < key:
+        curNode.size = curNode.size + 1
+        if curNode.key < key:
             if curNode.right is None:
                 # insert new node here
                 right = TreeNode()
