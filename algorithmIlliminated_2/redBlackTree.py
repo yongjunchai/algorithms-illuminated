@@ -218,3 +218,46 @@ class RedBlackTree:
             return self.searchEx_internal(curNode.right, key)
         else:
             return self.searchEx_internal(curNode.left, key)
+
+    def select_internal(self, node: TreeNode, i: int):
+        j = 0
+        if node.left is not None:
+            j = node.left.size
+        if i == j + 1:
+            return node.key
+        elif i <= j:
+            return self.select_internal(node.left, i)
+        else:
+            return self.select_internal(node.right, i - (j + 1))
+
+    def select(self, i: int):
+        """
+        return ith smallest key in the tree
+        :param i:
+        :return:
+        """
+        if self.root is None or i <= 0 or i >= self.root.size:
+            return None
+        return self.select_internal(self.root, i)
+
+    def selectEx_internal(self, node: TreeNode, i: int):
+        j = 0
+        if node.left is not None:
+            j = node.left.size
+        if i == j + 1:
+            return node
+        elif i <= j:
+            return self.selectEx_internal(node.left, i)
+        else:
+            return self.selectEx_internal(node.right, i - (j + 1))
+
+    def selectEx(self, i: int):
+        """
+        return ith smallest TreeNode in the tree
+        :param i:
+        :return:
+        """
+        if self.root is None or i <= 0 or i > self.root.size:
+            return None
+        return self.selectEx_internal(self.root, i)
+

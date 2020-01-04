@@ -138,6 +138,17 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(14 == redBlackTree.root.size)
         self.verifyNodeSize(redBlackTree.root)
 
+    def test_select(self):
+        keys = []
+        cnt = 1024
+        for i in range(1, cnt, 1):
+            keys.append(i)
+        redBlackTree = RedBlackTree()
+        for i in keys:
+            redBlackTree.insert(i, None)
+            node: TreeNode = redBlackTree.selectEx(i)
+            self.assertTrue(i == node.key)
+
 
 if __name__ == '__main__':
     unittest.main()

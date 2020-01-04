@@ -102,3 +102,7 @@ class Heap:
         self.items.pop()
         self.bubbleDown(0)
         return item
+
+    def peek(self):
+        return self.items[0]
+

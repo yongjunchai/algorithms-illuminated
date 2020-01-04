@@ -1,10 +1,31 @@
 from collections import deque
 from inspect import currentframe, getframeinfo
 import copy
-
 import time
 
 current_milli_time = lambda: int(round(time.time() * 1000))
+
+
+class Timer:
+    def __init__(self):
+        self.startMs: int = 0
+        self.endMs: int = 0
+
+    def reset(self):
+        self.startMs = 0
+        self.endMs = 0
+
+    def start(self):
+        self.startMs = current_milli_time()
+
+    def stop(self):
+        self.endMs = current_milli_time()
+
+    def timeElapsedMs(self):
+        if self.endMs > 0:
+            return self.endMs - self.startMs
+        else:
+            return current_milli_time() - self.startMs
 
 class Utils:
     @staticmethod
