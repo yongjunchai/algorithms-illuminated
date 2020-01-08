@@ -1,3 +1,4 @@
+import math
 """
 quiz 12.3
 """
@@ -26,4 +27,17 @@ class BirthdayProblem:
 
 birthdayProblem = BirthdayProblem()
 birthdayProblem.run()
+
+
+"""
+problem 12.3
+"""
+
+
+def calculateBloomFilterFalsePositiveRate(bits: int):
+    return math.pow(0.5, math.log(2) * bits)
+
+
+bits = 16
+print("bloom filter: false positive rate of  %d bits: %f" % (bits, calculateBloomFilterFalsePositiveRate(bits)))
 
