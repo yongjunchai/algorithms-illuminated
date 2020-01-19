@@ -17,8 +17,6 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(len(str(a)) == len(str(b)))
             x = random.randint(a, b)
             y = random.randint(a, b)
-            print(x)
-            print(y)
             m = karatsuba.multiply(str(x), str(y))
             self.assertTrue(m == (x * y))
 
@@ -29,6 +27,8 @@ class MyTestCase(unittest.TestCase):
         m = karatsuba.multiply(str(x), str(y))
         self.assertTrue(m == (x * y))
 
+        m = karatsuba.multiply(str(0), str(y))
+        self.assertTrue(m == 0)
 
 
 if __name__ == '__main__':
