@@ -30,5 +30,6 @@ class MyTestCase(unittest.TestCase):
                 self.assertTrue(minVal <= s[i])
                 minVal = s[i]
 
+
 if __name__ == '__main__':
     unittest.main()
