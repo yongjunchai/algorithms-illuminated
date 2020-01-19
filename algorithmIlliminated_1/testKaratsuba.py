@@ -22,6 +22,13 @@ class MyTestCase(unittest.TestCase):
             m = karatsuba.multiply(str(x), str(y))
             self.assertTrue(m == (x * y))
 
+    def test(self):
+        x = 1234
+        y = 99999999
+        karatsuba = Karatsuba()
+        m = karatsuba.multiply(str(x), str(y))
+        self.assertTrue(m == (x * y))
+
 
 
 if __name__ == '__main__':
