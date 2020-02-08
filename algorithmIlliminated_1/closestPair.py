@@ -1,6 +1,4 @@
-import copy
 import math
-import sys
 from algorithmIlliminated_1.mergeSort import *
 
 
@@ -27,31 +25,32 @@ class ClosestPair:
             len1 = self.calcDistance(points[0], points[1])
             len2 = self.calcDistance(points[0], points[2])
             len3 = self.calcDistance(points[1], points[2])
-            minLen = len1
+            minLenPair = len1
             pair = points[0], points[1]
-            if len2 < minLen:
-                minLen = len2
+            if len2 < minLenPair:
+                minLenPair = len2
                 pair = (points[0], points[2])
-            if len3 < minLen:
-                minLen = len3
+            if len3 < minLenPair:
+                minLenPair = len3
                 pair = (points[1], points[2])
             return pair
         mergeSort = MergeSort()
         px = mergeSort.mergeSort(points, lambda p1, p2: p1.x < p2.x)
-        for i in range(0, len(points)):
+        for i in range(0, len(px)):
             px[i].index = i
         py = px
         py = mergeSort.mergeSort(py, lambda p1, p2: p1.y < p2.y)
-        self.closestPair_internal(px, py)
+        return self.closestPair_internal(px, py)
 
     def closestSplitPair(self, px, py, minLenPair):
+        assert(len(px) == len(py))
         mid = int(len(px) / 2)
         midX = px[mid - 1].x
         lx = midX - minLenPair
         rx = midX + minLenPair
         sy = []
         for i in range(len(py)):
-            if lx <= py[i] <= rx:
+            if lx <= py[i].x <= rx:
                 sy.append(py[i])
         best = minLenPair
         bestPair = (None, None)
@@ -104,7 +103,7 @@ class ClosestPair:
         rLen = self.calcDistance(r1, r2)
         minLenPair = lLen
         minPair = (l1, l2)
-        if minLenPair < rLen:
+        if rLen < minLenPair:
             minLenPair = rLen
             minPair = (r1, r2)
         s1, s2 = self.closestSplitPair(px, py, minLenPair)
@@ -112,13 +111,3 @@ class ClosestPair:
             minPair = (s1, s2)
         return minPair
 
-
-p1 = Point(122, 11)
-p2 = Point(111, 112)
-p3 = Point(1, 2)
-p4 = Point(10000, 1)
-
-ps = [p1, p2, p3, p4]
-
-c = ClosestPair()
-c.closestPair(ps)
