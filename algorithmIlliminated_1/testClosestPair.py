@@ -33,8 +33,23 @@ class MyTestCase(unittest.TestCase):
         p2 = Point(5.2, 4.2)
         return (p, (p1, p2))
 
+    def loadData4(self):
+        dataList = [(-3, 2), (-1, 4), (1, 1), (3, 6), (5.2, 4.2), (3, 2), (3, -4), (5, 4), (5, -1)]
+        p = []
+        for data in dataList:
+            point = Point(data[0], data[1])
+            p.append(point)
+
+        pBase = Point(5, -1)
+        for i in range(1, 1024):
+            pI = Point(pBase.x + 2 * i, pBase.y + 2 * i)
+            p.append(pI)
+        p1 = Point(5, 4)
+        p2 = Point(5.2, 4.2)
+        return (p, (p1, p2))
+
     def test_findClosestPair(self):
-        dataSet = [self.loadData1(), self.loadData2(), self.loadData3()]
+        dataSet = [self.loadData1(), self.loadData2(), self.loadData3(), self.loadData4()]
         for data in dataSet:
             points = data[0]
             pair = data[1]
