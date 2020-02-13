@@ -16,7 +16,6 @@ class MyTestCase(unittest.TestCase):
             nums.append(maxNum - i)
         return (maxNum, nums)
 
-
     def createUnimodalArray_leftPadding(self, cnt: int):
         maxNum, nums = self.createUnimodalArray(cnt)
         numsLeftPadding = []
@@ -56,6 +55,7 @@ class MyTestCase(unittest.TestCase):
             unimodalMax = UnimodalMax()
             found = unimodalMax.findMax(nums)
             self.assertTrue(found == maxNum)
+
 
 if __name__ == '__main__':
     unittest.main()
