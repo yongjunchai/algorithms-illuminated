@@ -17,9 +17,42 @@ class MyTestCase(unittest.TestCase):
         return (maxNum, nums)
 
 
+    def createUnimodalArray_leftPadding(self, cnt: int):
+        maxNum, nums = self.createUnimodalArray(cnt)
+        numsLeftPadding = []
+        startVal = nums[0]
+        for i in range(1024, 0, -1):
+            numsLeftPadding.append(startVal - i)
+        numsLeftPadding.extend(nums)
+        return (maxNum, numsLeftPadding)
+
+    def createUnimodalArray_rightPadding(self, cnt: int):
+        maxNum, nums = self.createUnimodalArray(cnt)
+        numsRightPadding = []
+
+        startVal = nums[len(nums) - 1]
+        for i in range(1, 1024):
+            numsRightPadding.append(startVal - i)
+        nums.extend(numsRightPadding)
+        return (maxNum, nums)
+
     def test_unimodal(self):
         for i in range(1, 1024):
             maxNum, nums = self.createUnimodalArray(i)
+            unimodalMax = UnimodalMax()
+            found = unimodalMax.findMax(nums)
+            self.assertTrue(found == maxNum)
+
+    def test_unimodal_left_padding(self):
+        for i in range(1, 1024):
+            maxNum, nums = self.createUnimodalArray_leftPadding(i)
+            unimodalMax = UnimodalMax()
+            found = unimodalMax.findMax(nums)
+            self.assertTrue(found == maxNum)
+
+    def test_unimodal_right_padding(self):
+        for i in range(1, 1024):
+            maxNum, nums = self.createUnimodalArray_rightPadding(i)
             unimodalMax = UnimodalMax()
             found = unimodalMax.findMax(nums)
             self.assertTrue(found == maxNum)
