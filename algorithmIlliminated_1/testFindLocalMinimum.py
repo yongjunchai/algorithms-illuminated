@@ -26,9 +26,9 @@ class MyTestCase(unittest.TestCase):
         return rndNums
 
     def test_something(self):
-        for j in range(2, 1000):
-            i = 9
-            print(j)
+        for i in range(3, 1000):
+            #i = 9
+            print(i)
             timerData = Timer()
             timerData.start()
             #orderedData = self.createOrderedData(i, i)
@@ -43,7 +43,7 @@ class MyTestCase(unittest.TestCase):
             #self.assertTrue(FindLocalMinimum.isLocalMinimum(orderedData, i, i, 0, 0, row, col))
             timer.stop()
             #print("time elapsed %d ms" % timer.timeElapsedMs())
-            Utils.dumpMatrix(rndData, i, i)
+            #Utils.dumpMatrix(rndData, i, i)
             row, col = findLocalMinimum.findLocalMinimum(rndData, i, i)
             isLocalMin = FindLocalMinimum.isLocalMinimum(rndData, i, i, 0, 0, row, col)
             #if not isLocalMin:
