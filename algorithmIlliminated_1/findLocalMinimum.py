@@ -1,4 +1,11 @@
+from enum import Enum
 
+
+class Quadrant(Enum):
+    BottomLeft = 0
+    BottomRight = 1
+    TopLeft = 2
+    TopRight = 3
 
 # problem 3.4
 class FindLocalMinimum:
@@ -32,11 +39,10 @@ class FindLocalMinimum:
         :param columns:
         :return: index of the local minimum (row, column)
         """
-        return self.findLocalMinimum_internal(matrix, rows, columns, 0, 0)
+        return self.findLocalMinimum_internal(matrix, rows, columns, 0, 0, None)
 
-    def findLocalMinimum_internal(self, matrix, rows: int, columns: int, startRow: int, startColumn: int):
+    def findLocalMinimum_internal(self, matrix, rows: int, columns: int, startRow: int, startColumn: int, quadrant: Quadrant):
         """
-
         :param matrix:
         :param rows: rows inside the small rectangle
         :param columns: columns inside the small rectangle
@@ -45,44 +51,66 @@ class FindLocalMinimum:
         :return: row, column of local minimum
         """
         if rows < 4 or columns < 4:
-            for i in range(rows):
-                for j in range(columns):
+            iStart = 0
+            jStart = 0
+            if quadrant == Quadrant.BottomLeft:
+                rows = rows - 1
+                columns = columns - 1
+            elif quadrant == Quadrant.BottomRight:
+                iStart = 1
+                jStart = 1
+                rows = rows - 1
+            elif quadrant == Quadrant.TopLeft:
+                iStart = 1
+                columns = columns - 1
+            else:
+                iStart = 1
+                jStart = 1
+            for i in range(iStart, rows):
+                for j in range(jStart, columns):
                     if FindLocalMinimum.isLocalMinimum(matrix, rows, columns, startRow, startColumn, i, j):
                         return startRow + i, startColumn + j
             return None, None
         midRow = startRow + int(rows / 2)
         midCol = startColumn + int(columns / 2)
-        midPlusRow = midRow + 1
-        midPlusCol = midCol + 1
         midRowMinimum_row, midRowMinimum_column = self.findMinimum_of_row(matrix, columns, midRow, startColumn)
         midColMinimum_row, midColMinimum_column = self.findMinimum_of_column(matrix, rows, startRow, midCol)
-        midPlusRowMinimum_row, midPlusRowMinimum_column = self.findMinimum_of_row(matrix, columns, midPlusRow, startColumn)
-        midPlusColMinimum_row, midPlusColMinimum_column = self.findMinimum_of_column(matrix, rows, startRow, midPlusCol)
-        points = [(midRowMinimum_row, midRowMinimum_column),
-                  (midColMinimum_row, midColMinimum_column),
-                  (midPlusRowMinimum_row, midPlusRowMinimum_column),
-                  (midPlusColMinimum_row, midPlusColMinimum_column)
-                  ]
-        minRow, minCol = self.findMinimum(matrix, points)
-        if minRow <= midRow and minCol <= midCol:
-            # bottom left quadrant
-            return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, midCol - startColumn + 1, startRow, startColumn)
-        elif minRow <= midRow and minCol >= midPlusCol:
-            # bottom right quadrant
-            return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, columns - (midPlusCol - startColumn), startRow, midPlusCol)
-        elif minRow >= midPlusRow and minCol <= midCol:
-            # top left quadrant
-            return self.findLocalMinimum_internal(matrix, rows - (midPlusRow - startRow), midCol - startColumn + 1, midPlusRow, startColumn)
-        else:
-            # top right quadrant
-            return self.findLocalMinimum_internal(matrix, rows - (midPlusRow - startRow), columns - (midPlusCol - startColumn), midPlusRow, midPlusCol)
-
-    def findMinimum(self, maxtrix, points: list):
-        minRow, minCol = points[0][0], points[0][1]
-        for i in range(1, len(points)):
-            if maxtrix[minRow][minCol] > maxtrix[points[i][0]][points[i][1]]:
-                minRow = points[i][0]
-                minCol = points[i][1]
+        minRow, minCol = midRowMinimum_row, midRowMinimum_column
+        if matrix[minRow][minCol] > matrix[midColMinimum_row][midColMinimum_column]:
+            minRow, minCol = midColMinimum_row, midColMinimum_column
+        # roll downhill to the quadrant
+        if minRow - 1 >= startRow:
+            if matrix[minRow - 1][minCol] < matrix[minRow][minCol]:
+                if minCol <= midCol:
+                    # bottom left quadrant
+                    return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, midCol - startColumn + 1, startRow, startColumn, Quadrant.BottomLeft)
+                else:
+                    # bottom right quadrant
+                    return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, columns - (midCol - startColumn), startRow, midCol, Quadrant.BottomRight)
+        if minRow + 1 < startRow + rows:
+            if matrix[minRow + 1][minCol] < matrix[minRow][minCol]:
+                if minCol <= midCol:
+                    # top left quadrant
+                    return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow), midCol - startColumn + 1, midRow, startColumn, Quadrant.TopLeft)
+                else:
+                    # top right quadrant
+                    return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow), columns - (midCol - startColumn), midRow, midCol, Quadrant.TopRight)
+        if minCol - 1 >= startColumn:
+            if matrix[minRow][minCol - 1] < matrix[minRow][minCol]:
+                if minRow <= midRow:
+                    # bottom left quadrant
+                    return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, midCol - startColumn + 1, startRow, startColumn, Quadrant.BottomLeft)
+                else:
+                    # top left quadrant
+                    return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow), midCol - startColumn + 1, midRow, startColumn, Quadrant.TopLeft)
+        if minCol + 1 < startColumn + columns:
+            if matrix[minRow][minCol + 1] < matrix[minRow][minCol]:
+                if minRow <= midRow:
+                    # bottom right quadrant
+                    return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, columns - (midCol - startColumn), startRow, midCol, Quadrant.BottomRight)
+                else:
+                    # top right quadrant
+                    return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow), columns - (midCol - startColumn), midRow, midCol,Quadrant.TopRight)
         return minRow, minCol
 
     def findMinimum_of_column(self, matrix, rows: int, startRow: int, startColumn: int):
