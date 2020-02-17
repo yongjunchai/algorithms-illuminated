@@ -1,11 +1,4 @@
-from enum import Enum
 
-
-class Quadrant(Enum):
-    BottomLeft = 0
-    BottomRight = 1
-    TopLeft = 2
-    TopRight = 3
 
 # problem 3.4
 class FindLocalMinimum:
@@ -48,6 +41,8 @@ class FindLocalMinimum:
         :param columns: columns inside the small rectangle
         :param startRow: bottom left of the small rectangle inside the matrix
         :param startColumn: bottom left of the small rectangle inside the matrix
+        :param estMinRow: the row of the item that trigger the roll downhill
+        :param estMinCol: the column of the item that trigger the roll downhill
         :return: row, column of local minimum
         """
         if rows < 4 or columns < 4:
@@ -65,9 +60,9 @@ class FindLocalMinimum:
         if matrix[minRow][minCol] > matrix[midColMinimum_row][midColMinimum_column]:
             minRow, minCol = midColMinimum_row, midColMinimum_column
         # roll downhill to the quadrant
-        # To the entered quadrant, skip the mid row / column
         if estMinRow is not None and estMinCol is not None:
             if matrix[estMinRow][estMinCol] < matrix[minRow][minCol]:
+                # enter the quadrant that the estimate minimum item exist
                 if estMinRow <= midRow:
                     if estMinCol <= midCol:
                         # bottom left quadrant
