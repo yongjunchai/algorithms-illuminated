@@ -1,5 +1,6 @@
 import random
 
+
 class Quicksort:
     def __init__(self):
         pass

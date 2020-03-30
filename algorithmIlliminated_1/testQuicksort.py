@@ -2,6 +2,7 @@ import unittest
 from algorithmIlliminated_1.quicksort import *
 import random
 
+
 class MyTestCase(unittest.TestCase):
     def test_quickSort(self):
         arr = []
@@ -14,7 +15,6 @@ class MyTestCase(unittest.TestCase):
             quickSort.sort(arr, 0, n - 1)
             for j in range(0, n):
                 self.assertTrue(arr[j] == j)
-
 
 
 if __name__ == '__main__':
