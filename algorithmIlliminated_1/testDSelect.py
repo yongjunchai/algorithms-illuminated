@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         dSelect = DSelect()
         for i in range(rounds):
             ith = random.randint(1, dataLen)
-            j = dSelect.select(arr, 0, dataLen - 1, ith)
+            j, index = dSelect.select(arr, 0, dataLen - 1, ith)
             self.assertTrue(j == ith - 1)
 
 
