@@ -25,7 +25,7 @@ class DSelect:
 
     def select(self, arr: list, left: int, right: int, i: int, getVal=lambda x: x):
         """
-        select ith order statistic of arr
+        select ith order statistic of arr[left:right]
         """
         if i > right - left + 1:
             return None, None
