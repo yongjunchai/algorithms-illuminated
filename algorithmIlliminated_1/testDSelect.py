@@ -15,6 +15,7 @@ class MyTestCase(unittest.TestCase):
             ith = random.randint(1, dataLen)
             j, index = dSelect.select(arr, 0, dataLen - 1, ith)
             self.assertTrue(j == ith - 1)
+            self.assertTrue(j == arr[index])
 
 
 if __name__ == '__main__':
