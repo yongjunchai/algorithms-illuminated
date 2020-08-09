@@ -23,6 +23,7 @@ class MyTestCase(unittest.TestCase):
         tsp = TSP(graph)
         tsp.solve("a")
         self.assertTrue(tsp.tourLength == 13)
+        print("shortest tour: ")
         for edge in tsp.edges.values():
             print(edge.srcNodeName + " --> " + edge.targetNodeName + "  :  " + str(edge.edgeLength))
 
