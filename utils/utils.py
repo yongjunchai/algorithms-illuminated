@@ -27,6 +27,7 @@ class Timer:
         else:
             return current_milli_time() - self.startMs
 
+
 class Utils:
     @staticmethod
     def createArray_internal(dimensions: list, index: int, root, defaultVal = None):
