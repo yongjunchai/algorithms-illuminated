@@ -1,55 +1,67 @@
 import sys
 from utils.utils import *
-import copy
 
 
 class TSP:
     def __init__(self, graph: Graph):
-        # list of tour edges with minimum length
-        self.edges = list()
+        # edges of the shortest tour
+        self.edges = dict()
         self.tourLength = sys.maxsize
         self.graph = graph
 
-    def solve(self, start: Node):
-        edges: dict = start.outflowEdges
-        for edge in edges:
-            nodesVisited = set()
-            edgesVisited = list()
-            target = self.graph.nodes.get(edge.targetNodeName)
-            nodesVisited.add(start.name)
-            nodesVisited.add(target.name)
-            edgesVisited.append(edge)
-            self.travel(start, target, copy.deepcopy(nodesVisited), copy.deepcopy(edgesVisited))
+    def getEdgeKey(self, edge: Edge):
+        return edge.srcNodeName + "_to_" + edge.targetNodeName
 
-    def calculateEdgesLength(self, edges: list):
+    def solve(self, start: str):
+        startNode: Node = self.graph.nodes.get(start)
+        edges: dict = startNode.outflowEdges
+        nodesVisited = set()
+        edgesVisited = dict()
+        nodesVisited.add(start)
+        for name, length in edges.items():
+            target = self.graph.nodes.get(name)
+            nodesVisited.add(target.name)
+            edge = Edge(start, name, length)
+            edgesVisited[self.getEdgeKey(edge)] = edge
+            self.travel(start, target, nodesVisited, edgesVisited)
+            nodesVisited.remove(target.name)
+            edgesVisited.pop(self.getEdgeKey(edge))
+        assert len(edgesVisited) == 0
+        assert len(nodesVisited) == 1
+
+    def calculateEdgesLength(self, edges: dict):
         totalLength = 0
-        for edge in edges:
+        for edge in edges.values():
             totalLength += edge.edgeLength
         return totalLength
 
-    def travel(self, startNode: Node, curNode: Node, nodesVisited: set, edgesVisited: list):
+    def travel(self, start: str, curNode: Node, nodesVisited: set, edgesVisited: dict):
         # if all nodes visited, then the tour is done
         # check whether the current tour is the shortest tour
         if len(nodesVisited) == len(self.graph.nodes):
             for name, length in curNode.outflowEdges.items():
-                if name == startNode.name:
-                    edge = Edge(curNode.name, startNode.name, length)
-                    edgesVisited.append(edge)
+                if name == start:
+                    edge = Edge(curNode.name, start, length)
+                    edgesVisited[self.getEdgeKey(edge)] = edge
                     totalLength = self.calculateEdgesLength(edgesVisited)
                     if totalLength < self.tourLength:
                         self.tourLength = totalLength
                         self.edges = copy.deepcopy(edgesVisited)
+                    edgesVisited.pop(self.getEdgeKey(edge))
                     return
             assert False
             return
+
         edges: dict = curNode.outflowEdges
-        for edge in edges:
-            if edge.targetNodeName in nodesVisited:
+        for name, length in edges.items():
+            if name in nodesVisited:
                 continue
-            targetNode = self.graph.nodes.get(edge.targetNodeName)
-            self.travel(startNode, targetNode, copy.deepcopy(nodesVisited).add(edge.targetNodeName),
-                        copy.deepcopy(edgesVisited).append(edge))
+            targetNode = self.graph.nodes.get(name)
+            nodesVisited.add(name)
+            edge = Edge(curNode.name, name, length)
+            edgesVisited[self.getEdgeKey(edge)] = edge
+            self.travel(start, targetNode, nodesVisited, edgesVisited)
+            nodesVisited.remove(targetNode.name)
+            edgesVisited.pop(self.getEdgeKey(edge))
 
-
-    # TODO: don't copy the collection
 
