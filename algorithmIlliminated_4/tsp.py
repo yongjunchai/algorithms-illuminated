@@ -8,6 +8,7 @@ class TSP:
         self.edges = dict()
         self.tourLength = sys.maxsize
         self.graph = graph
+        self.totalTours = 0
 
     def getEdgeKey(self, edge: Edge):
         return edge.srcNodeName + "_to_" + edge.targetNodeName
@@ -29,9 +30,14 @@ class TSP:
         assert len(edgesVisited) == 0
         assert len(nodesVisited) == 1
 
-    def calculateEdgesLength(self, edges: dict):
+    def dumpTour(self, edges: list):
+        print("[%d] tour length: %d" % (self.totalTours, self.calculateEdgesLength(edges)))
+        for edge in edges:
+            print(edge.srcNodeName + " --> " + edge.targetNodeName + "  :  " + str(edge.edgeLength))
+
+    def calculateEdgesLength(self, edges: list):
         totalLength = 0
-        for edge in edges.values():
+        for edge in edges:
             totalLength += edge.edgeLength
         return totalLength
 
@@ -43,10 +49,12 @@ class TSP:
                 if name == start:
                     edge = Edge(curNode.name, start, length)
                     edgesVisited[self.getEdgeKey(edge)] = edge
-                    totalLength = self.calculateEdgesLength(edgesVisited)
+                    totalLength = self.calculateEdgesLength(edgesVisited.values())
                     if totalLength < self.tourLength:
                         self.tourLength = totalLength
                         self.edges = copy.deepcopy(edgesVisited)
+                    self.totalTours += 1
+                    self.dumpTour(edgesVisited.values())
                     edgesVisited.pop(self.getEdgeKey(edge))
                     return
             assert False
