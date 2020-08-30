@@ -17,7 +17,6 @@ class TspSpecial:
         self.edges = dict()
         self.tourLength = sys.maxsize
 
-
     def getStartNode(self):
         for node in self.graph.nodes.values():
             return node
