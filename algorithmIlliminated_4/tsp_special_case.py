@@ -44,13 +44,15 @@ class TspSpecial:
 
     def getMinTsp(self):
         self.convertToCompleteUndirectedGraph()
+        print("done")
 
 
 edge1 = Edge("A", "B", 1)
 edge2 = Edge("B", "C", 2)
 edge3 = Edge("B", "D", 3)
+edge4 = Edge("C", "E", 1)
 
-edges = [edge1, edge2, edge3]
+edges = [edge1, edge2, edge3, edge4]
 
 graph = GraphUndirected(edges)
 tspSpecial = TspSpecial(graph)
