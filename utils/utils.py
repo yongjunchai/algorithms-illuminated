@@ -163,6 +163,9 @@ class Edge:
         self.targetNodeName = targetNodeName
         self.edgeLength = edgeLength
 
+    def getEdgeKey(self):
+        return self.srcNodeName + "_to_" + self.targetNodeName
+
 
 class GraphUndirected:
     def __init__(self, edges: list):
@@ -182,6 +185,34 @@ class GraphUndirected:
     def clearVisitedFlag(self):
         for node in self.nodes.values():
             node.visited = False
+
+    def convertToCompleteUndirectedGraph(self):
+        for node in self.nodes.values():
+            self.clearVisitedFlag()
+            node.visited = True
+            for item in node.connectedEdges.items():
+                nodeName = item[0]
+                edgeLength = item[1]
+                nodeConnected: NodeUndirected = self.nodes.get(nodeName)
+                nodeConnected.visited = True
+                for itemSndLevel in nodeConnected.connectedEdges.items():
+                    nodeNameSndLevel = itemSndLevel[0]
+                    edgeLengthSndLevel = itemSndLevel[1]
+                    if nodeNameSndLevel == node.name:
+                        continue
+                    nodeSndLevel: NodeUndirected = self.nodes.get(nodeNameSndLevel)
+                    self.completeNode(nodeSndLevel, node, edgeLength + edgeLengthSndLevel)
+
+    def completeNode(self, node: NodeUndirected, nodeStart: NodeUndirected, pathLength: int):
+        node.visited = True
+        nodeStart.addExtEdge(node.name, pathLength)
+        for item in node.connectedEdges.items():
+            nodeName = item[0]
+            edgeLength = item[1]
+            nodeConnected: NodeUndirected = self.nodes.get(nodeName)
+            if nodeConnected.visited is True:
+                continue
+            self.completeNode(nodeConnected, nodeStart, pathLength + edgeLength)
 
 
 class Graph:

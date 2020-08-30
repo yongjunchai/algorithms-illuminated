@@ -10,9 +10,6 @@ class TSP:
         self.graph = graph
         self.totalTours = 0
 
-    def getEdgeKey(self, edge: Edge):
-        return edge.srcNodeName + "_to_" + edge.targetNodeName
-
     def solve(self, start: str):
         startNode: Node = self.graph.nodes.get(start)
         edges: dict = startNode.outflowEdges
@@ -23,10 +20,10 @@ class TSP:
             target = self.graph.nodes.get(name)
             nodesVisited.add(target.name)
             edge = Edge(start, name, length)
-            edgesVisited[self.getEdgeKey(edge)] = edge
+            edgesVisited[edge.getEdgeKey()] = edge
             self.travel(start, target, nodesVisited, edgesVisited)
             nodesVisited.remove(target.name)
-            edgesVisited.pop(self.getEdgeKey(edge))
+            edgesVisited.pop(edge.getEdgeKey())
         assert len(edgesVisited) == 0
         assert len(nodesVisited) == 1
 
@@ -48,14 +45,14 @@ class TSP:
             for name, length in curNode.outflowEdges.items():
                 if name == start:
                     edge = Edge(curNode.name, start, length)
-                    edgesVisited[self.getEdgeKey(edge)] = edge
+                    edgesVisited[edge.getEdgeKey()] = edge
                     totalLength = self.calculateEdgesLength(edgesVisited.values())
                     if totalLength < self.tourLength:
                         self.tourLength = totalLength
                         self.edges = copy.deepcopy(edgesVisited)
                     self.totalTours += 1
                     self.dumpTour(edgesVisited.values())
-                    edgesVisited.pop(self.getEdgeKey(edge))
+                    edgesVisited.pop(edge.getEdgeKey())
                     return
             assert False
             return
@@ -67,9 +64,9 @@ class TSP:
             targetNode = self.graph.nodes.get(name)
             nodesVisited.add(name)
             edge = Edge(curNode.name, name, length)
-            edgesVisited[self.getEdgeKey(edge)] = edge
+            edgesVisited[edge.getEdgeKey()] = edge
             self.travel(start, targetNode, nodesVisited, edgesVisited)
             nodesVisited.remove(targetNode.name)
-            edgesVisited.pop(self.getEdgeKey(edge))
+            edgesVisited.pop(edge.getEdgeKey())
 
 

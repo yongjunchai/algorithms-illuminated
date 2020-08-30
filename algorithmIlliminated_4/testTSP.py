@@ -57,6 +57,40 @@ class MyTestCase(unittest.TestCase):
         print("shortest tour: ")
         tsp.dumpTour(tsp.edges.values())
 
+    def extractEdges(self, graph: GraphUndirected):
+        edgeDict = dict()
+        edges = list()
+        for node in graph.nodes.values():
+            for name, length in node.connectedEdges.items():
+                edge1 = Edge(node.name, name, length)
+                edge2 = Edge(name, node.name, length)
+                edgeDict[edge1.getEdgeKey()] = edge1
+                edgeDict[edge2.getEdgeKey()] = edge2
+            for name, length in node.extConnectedEdges.items():
+                edge1 = Edge(node.name, name, length)
+                edge2 = Edge(name, node.name, length)
+                edgeDict[edge1.getEdgeKey()] = edge1
+                edgeDict[edge2.getEdgeKey()] = edge2
+        for edge in edgeDict.values():
+            edges.append(edge)
+        return edges
+
+    def test_tsp_special_case(self):
+        edge1 = Edge("A", "B", 1)
+        edge2 = Edge("B", "C", 2)
+        edge3 = Edge("B", "D", 3)
+        edge4 = Edge("C", "E", 1)
+
+        edges = [edge1, edge2, edge3, edge4]
+        graphUndirected = GraphUndirected(edges)
+        graphUndirected.convertToCompleteUndirectedGraph()
+        graph = Graph(self.extractEdges(graphUndirected))
+        tsp = TSP(graph)
+        tsp.solve("A")
+        print("shortest tour: ")
+        tsp.dumpTour(tsp.edges.values())
+
+
 
 if __name__ == '__main__':
     unittest.main()

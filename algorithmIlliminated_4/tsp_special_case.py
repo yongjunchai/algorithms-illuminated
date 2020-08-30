@@ -1,6 +1,6 @@
 
 from utils.utils import *
-import json
+import sys
 
 """
 problem 19.8
@@ -13,47 +13,76 @@ class TspSpecial:
         graph is a connected an acyclic graph
         """
         self.graph = graph
+        # edges of the shortest tour
+        self.edges = dict()
+        self.tourLength = sys.maxsize
 
-    def convertToCompleteUndirectedGraph(self):
+
+    def getStartNode(self):
         for node in self.graph.nodes.values():
-            self.graph.clearVisitedFlag()
-            node.visited = True
-            for item in node.connectedEdges.items():
-                nodeName = item[0]
-                edgeLength = item[1]
-                nodeConnected: NodeUndirected = self.graph.nodes.get(nodeName)
-                nodeConnected.visited = True
-                for itemSndLevel in nodeConnected.connectedEdges.items():
-                    nodeNameSndLevel = itemSndLevel[0]
-                    edgeLengthSndLevel = itemSndLevel[1]
-                    if nodeNameSndLevel == node.name:
-                        continue
-                    nodeSndLevel: NodeUndirected = self.graph.nodes.get(nodeNameSndLevel)
-                    self.completeNode(nodeSndLevel, node, edgeLength + edgeLengthSndLevel)
-
-    def completeNode(self, node: NodeUndirected, nodeStart: NodeUndirected, pathLength: int):
-        node.visited = True
-        nodeStart.addExtEdge(node.name, pathLength)
-        for item in node.connectedEdges.items():
-            nodeName = item[0]
-            edgeLength = item[1]
-            nodeConnected: NodeUndirected = self.graph.nodes.get(nodeName)
-            if nodeConnected.visited is True:
-                continue
-            self.completeNode(nodeConnected, nodeStart, pathLength + edgeLength)
+            return node
+        return None
 
     def getMinTsp(self):
-        self.convertToCompleteUndirectedGraph()
-        print("done")
+        self.graph.convertToCompleteUndirectedGraph()
+        # set any node as the tour starting node
+        startNode: NodeUndirected = self.getStartNode()
+        edges: dict = startNode.connectedEdges
+        nodesVisited = set()
+        edgesVisited = dict()
+        nodesVisited.add(startNode.name)
+        targetNode, length = self.getNextNode(edges, nodesVisited)
+        nodesVisited.add(targetNode.name)
+        edge = Edge(startNode.name, targetNode.name, length)
+        edgesVisited[edge.getEdgeKey()] = edge
+        self.travel(startNode.name, targetNode, nodesVisited, edgesVisited)
 
+    def getNextNode(self, edges: dict, nodesVisited: dict):
+        for name, length in edges.items():
+            if name in nodesVisited:
+                continue
+            return self.graph.nodes.get(name), length
+        return None, None
 
-edge1 = Edge("A", "B", 1)
-edge2 = Edge("B", "C", 2)
-edge3 = Edge("B", "D", 3)
-edge4 = Edge("C", "E", 1)
+    def travel(self, startNodeName: str, curNode: NodeUndirected, nodesVisited: set, edgesVisited: dict):
+        # if all nodes visited, then the tour is done
+        if len(nodesVisited) == len(self.graph.nodes):
+            for name, length in curNode.connectedEdges.items():
+                if name == startNodeName:
+                    edge = Edge(curNode.name, startNodeName, length)
+                    edgesVisited[edge.getEdgeKey()] = edge
+                    totalLength = self.calculateEdgesLength(edgesVisited.values())
+                    self.tourLength = totalLength
+                    self.edges = edgesVisited
+                    self.dumpTour(edgesVisited.values())
+                    return
+            for name, length in curNode.extConnectedEdges.items():
+                if name == startNodeName:
+                    edge = Edge(curNode.name, startNodeName, length)
+                    edgesVisited[edge.getEdgeKey()] = edge
+                    totalLength = self.calculateEdgesLength(edgesVisited.values())
+                    self.tourLength = totalLength
+                    self.edges = edgesVisited
+                    self.dumpTour(edgesVisited.values())
+                    return
+            assert False
+            return
+        targetNode, length = self.getNextNode(curNode.connectedEdges, nodesVisited)
+        if targetNode is None:
+            targetNode, length = self.getNextNode(curNode.extConnectedEdges, nodesVisited)
 
-edges = [edge1, edge2, edge3, edge4]
+        nodesVisited.add(targetNode.name)
+        edge = Edge(curNode.name, targetNode.name, length)
+        edgesVisited[edge.getEdgeKey()] = edge
+        self.travel(startNodeName, targetNode, nodesVisited, edgesVisited)
 
-graph = GraphUndirected(edges)
-tspSpecial = TspSpecial(graph)
-tspSpecial.getMinTsp()
+    def dumpTour(self, edges: list):
+        print("tour length: %d" % (self.calculateEdgesLength(edges)))
+        for edge in edges:
+            print(edge.srcNodeName + " --> " + edge.targetNodeName + "  :  " + str(edge.edgeLength))
+
+    def calculateEdgesLength(self, edges: list):
+        totalLength = 0
+        for edge in edges:
+            totalLength += edge.edgeLength
+        return totalLength
