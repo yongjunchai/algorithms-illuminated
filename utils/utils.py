@@ -101,6 +101,30 @@ class Utils:
             print("")
 
 
+class NodeUndirected:
+    def __init__(self, nodeName: str):
+        self.name = nodeName
+        self.connectedEdges = dict()
+        # ext edges are edges added for complete graph
+        self.extConnectedEdges = dict()
+        self.visited = False
+
+    def addEdge(self, nodeName: str, edgeLength: int):
+        edge = self.connectedEdges.get(nodeName)
+        if edge is None:
+            self.connectedEdges[nodeName] = edgeLength
+        else:
+            if edge > edgeLength:
+                self.connectedEdges[nodeName] = edgeLength
+
+    def addExtEdge(self, nodeName: str, edgeLength: int):
+        edge = self.extConnectedEdges.get(nodeName)
+        if edge is None:
+            self.extConnectedEdges[nodeName] = edgeLength
+        else:
+            if edge > edgeLength:
+                self.extConnectedEdges[nodeName] = edgeLength
+
 class Node:
     def __init__(self, nodeName: str):
         self.name = nodeName
@@ -132,11 +156,32 @@ class Node:
                 return
         self.outflowEdges[outflowNodeName] = edgeLength
 
+
 class Edge:
     def __init__(self, srcNodeName: str, targetNodeName: str, edgeLength: int):
         self.srcNodeName = srcNodeName
         self.targetNodeName = targetNodeName
         self.edgeLength = edgeLength
+
+
+class GraphUndirected:
+    def __init__(self, edges: list):
+        self.nodes = dict()
+        for edge in edges:
+            srcNode: NodeUndirected = self.nodes.get(edge.srcNodeName)
+            if srcNode is None:
+                srcNode = NodeUndirected(edge.srcNodeName)
+                self.nodes[edge.srcNodeName] = srcNode
+            srcNode.addEdge(edge.targetNodeName, edge.edgeLength)
+            targetNode: NodeUndirected = self.nodes.get(edge.targetNodeName)
+            if targetNode is None:
+                targetNode = NodeUndirected(edge.targetNodeName)
+                self.nodes[edge.targetNodeName] = targetNode
+            targetNode.addEdge(edge.srcNodeName, edge.edgeLength)
+
+    def clearVisitedFlag(self):
+        for node in self.nodes.values():
+            node.visited = False
 
 
 class Graph:
