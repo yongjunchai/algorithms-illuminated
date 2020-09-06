@@ -10,7 +10,7 @@ problem 19.8
 class TspSpecial:
     def __init__(self, graph: GraphUndirected):
         """
-        graph is a connected an acyclic graph
+        graph is a connected acyclic graph
         """
         self.graph = graph
         # edges of the shortest tour
@@ -37,6 +37,9 @@ class TspSpecial:
         self.travel(startNode.name, targetNode, nodesVisited, edgesVisited)
 
     def getNextNode(self, edges: dict, nodesVisited: dict):
+        """
+        return (node, edge length)
+        """
         for name, length in edges.items():
             if name in nodesVisited:
                 continue
@@ -85,3 +88,5 @@ class TspSpecial:
         for edge in edges:
             totalLength += edge.edgeLength
         return totalLength
+
+

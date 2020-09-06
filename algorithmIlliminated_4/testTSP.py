@@ -91,6 +91,5 @@ class MyTestCase(unittest.TestCase):
         tsp.dumpTour(tsp.edges.values())
 
 
-
 if __name__ == '__main__':
     unittest.main()
