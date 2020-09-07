@@ -10,7 +10,7 @@ problem 19.8
 class TspSpecial:
     def __init__(self, graph: GraphUndirected):
         """
-        graph is a connected acyclic graph
+        graph is a connected and acyclic graph
         """
         self.graph = graph
         # edges of the shortest tour
