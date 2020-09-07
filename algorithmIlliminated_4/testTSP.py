@@ -90,6 +90,19 @@ class MyTestCase(unittest.TestCase):
         print("shortest tour: ")
         tsp.dumpTour(tsp.edges.values())
 
+    def test_tsp_special_case_4_vertices(self):
+        edge1 = Edge("A", "B", 1)
+        edge2 = Edge("B", "C", 2)
+        edge3 = Edge("B", "D", 3)
+        edges = [edge1, edge2, edge3]
+        graphUndirected = GraphUndirected(edges)
+        graphUndirected.convertToCompleteUndirectedGraph()
+        graph = Graph(self.extractEdges(graphUndirected))
+        tsp = TSP(graph)
+        tsp.solve("A")
+        print("shortest tour: ")
+        tsp.dumpTour(tsp.edges.values())
+
 
 if __name__ == '__main__':
     unittest.main()
