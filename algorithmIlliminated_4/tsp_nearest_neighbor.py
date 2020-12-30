@@ -1,4 +1,4 @@
-
+import sys
 from utils.utils import *
 
 
@@ -67,7 +67,13 @@ class Tsp:
             self.headTourNode.previousLength = edgeLen
 
     def getEdgeLength(self, endpoint1: str, endpoint2: str):
-        pass
+        node: Node = self.graph.nodes.get(endpoint1)
+        if node is None:
+            return sys.maxsize
+        length = node.outflowEdges.get(endpoint2)
+        if length is None:
+            return sys.maxsize
+        return length
 
     def two_opt(self, startNodeName: str):
         self.nearest_neighbor(startNodeName)
