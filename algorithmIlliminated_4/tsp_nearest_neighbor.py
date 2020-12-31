@@ -11,7 +11,7 @@ class TourNode:
         self.previousLength = 0
 
 
-class Tsp:
+class TspLocalSearch:
     def __init__(self, graph: Graph):
         # TourNode in the visited sequence  of the tour
         self.headTourNode: TourNode = None
@@ -19,20 +19,31 @@ class Tsp:
         self.graph = graph
         self.suc = True
 
+    def dumpTour(self):
+        print("tour length: {}".format(self.tourLength))
+        curTourNode = self.headTourNode
+        print("{} --> {}  : {}".format(curTourNode.name, curTourNode.next.name, curTourNode.nextLength))
+        curTourNode = curTourNode.next
+        while(curTourNode.name != self.headTourNode.name):
+            print("{} --> {}  : {}".format(curTourNode.name, curTourNode.next.name, curTourNode.nextLength))
+            curTourNode = curTourNode.next
+
     def nearest_neighbor(self, startNode: str):
+        self.headTourNode = Node
+        self.tourLength = 0
+        self.suc = True
         curNode: Node = self.graph.nodes.get(startNode)
         if curNode is None:
             print("Failed to find start node {}".format(startNode))
             self.suc = False
             return
         tailTourNode: TourNode = None
+        curNode.visited = True
         while curNode is not None:
             curTourNode = TourNode(curNode.name)
-
             if tailTourNode is None:
                 tailTourNode = curTourNode
                 self.headTourNode = curTourNode
-
             # find nearest not-visited neighbor
             nextNode = None
             nextEdgeLength = 0
@@ -47,13 +58,12 @@ class Tsp:
                 if (nextNode is None) or (length < nextEdgeLength):
                     nextNode = node
                     nextEdgeLength = length
-                    continue
             curNode = None
             if nextNode is None:
                 continue
             nextNode.visited = True
-            tailTourNode.nextLength = nextEdgeLength
             tailTourNode.next = TourNode(nextNode.name)
+            tailTourNode.nextLength = nextEdgeLength
             tailTourNode.next.previous = tailTourNode
             tailTourNode.next.previousLength = nextEdgeLength
             tailTourNode = tailTourNode.next
@@ -65,8 +75,11 @@ class Tsp:
             tailTourNode.nextLength = edgeLen
             self.headTourNode.previous = tailTourNode
             self.headTourNode.previousLength = edgeLen
+            self.tourLength = self.tourLength + edgeLen
 
     def getEdgeLength(self, endpoint1: str, endpoint2: str):
+        if endpoint1 == endpoint2:
+            return 0
         node: Node = self.graph.nodes.get(endpoint1)
         if node is None:
             return sys.maxsize
@@ -98,23 +111,27 @@ class Tsp:
                         continue
                     linkLenSum = firstTourNode.nextLength + secondTourNode.nextLength
                     swappedLinkLenSum = self.getEdgeLength(firstTourNode.name, secondTourNode.name) + \
-                        self.getEdgeLength(firstTourNode.next.name + secondTourNode.next.name)
+                        self.getEdgeLength(firstTourNode.next.name,  secondTourNode.next.name)
                     if linkLenSum > swappedLinkLenSum:
                         if (optTourNode1 is None) or (lenDecrease < (linkLenSum - swappedLinkLenSum)):
                             optTourNode1 = firstTourNode
                             optTourNode2 = secondTourNode
                             lenDecrease = linkLenSum - swappedLinkLenSum
+                    secondTourNode = secondTourNode.next
+                firstTourNode = firstTourNode.next
             if optTourNode1 is None:
                 isLocalMinimum = True
                 continue
+            print("current tour length: {}".format(self.tourLength))
+            print("swap link {}->{}, {}->{}".format(optTourNode1.name, optTourNode1.next.name, optTourNode2.name, optTourNode2.next.name))
+            print("tour length decrease: {}".format(lenDecrease))
             v = optTourNode1
             w = optTourNode1.next
             x = optTourNode2
-            u = x.next
+            u = optTourNode2.next
             xPrevious = x.previous
-            xPreviousLength = x.previousLength
 
-
+            # do the 2OPT swap
             v.next = x
             v.nextLength = self.getEdgeLength(v.name, x.name)
             x.previous = v
@@ -124,12 +141,15 @@ class Tsp:
             u.previous = w
             u.previousLength = w.nextLength
             # flip the link direction from x, to w
-            x.nextLength = xPreviousLength
             curFlipNode = x
             curFlipNodePrevious = xPrevious
             while curFlipNode.name != w.name:
                 curFlipNode.next = curFlipNodePrevious
+                curFlipNode.nextLength = curFlipNodePrevious.nextLength
                 curFlipNodePrevious = curFlipNodePrevious.previous
                 curFlipNode.next.previous = curFlipNode
+                curFlipNode.next.previousLength = curFlipNode.nextLength
                 curFlipNode = curFlipNode.next
+            self.tourLength = self.tourLength - lenDecrease
+            self.dumpTour()
 

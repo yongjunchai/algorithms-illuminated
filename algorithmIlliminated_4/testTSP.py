@@ -2,7 +2,7 @@ import unittest
 
 from algorithmIlliminated_4.tsp import *
 from utils.utils import *
-
+from algorithmIlliminated_4.tsp_nearest_neighbor import *
 
 class MyTestCase(unittest.TestCase):
     def test_TSP_4_vertices(self):
@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
         print("shortest tour: ")
         tsp.dumpTour(tsp.edges.values())
 
-    def test_TSP_5_vertices_quiz_20_7(self):
+    def get_graph_quiz_20_7(self):
         edge1 = Edge("a", "b", 1)
         edge2 = Edge("b", "a", 1)
         edge3 = Edge("b", "c", 2)
@@ -78,14 +78,18 @@ class MyTestCase(unittest.TestCase):
         edge18 = Edge("d", "b", 6)
         edge19 = Edge("a", "d", 5)
         edge20 = Edge("d", "a", 5)
-
         edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10, edge11, edge12,
                  edge13, edge14, edge15, edge16, edge17, edge18, edge19, edge20]
         graph = Graph(edges)
+        return graph
+
+    def test_TSP_5_vertices_quiz_20_7(self):
+        graph = self.get_graph_quiz_20_7()
         tsp = TSP(graph)
         tsp.solve("a")
         print("shortest tour: ")
         tsp.dumpTour(tsp.edges.values())
+
 
     def extractEdges(self, graph: GraphUndirected):
         edgeDict = dict()
@@ -132,6 +136,21 @@ class MyTestCase(unittest.TestCase):
         tsp.solve("A")
         print("shortest tour: ")
         tsp.dumpTour(tsp.edges.values())
+
+    def test_tsp_nearest_neighbor(self):
+        graph: Graph = self.get_graph_quiz_20_7()
+        tspLocalSearch = TspLocalSearch(graph)
+        tspLocalSearch.nearest_neighbor("a")
+        self.assertTrue(tspLocalSearch.tourLength == 29)
+        print("tour length found by nearest neighbor {}".format(tspLocalSearch.tourLength))
+        tspLocalSearch.dumpTour()
+
+        graph: Graph = self.get_graph_quiz_20_7()
+        tspLocalSearch = TspLocalSearch(graph)
+        tspLocalSearch.two_opt("a")
+        self.assertTrue(tspLocalSearch.tourLength == 24)
+        print("tour length found by local search 2OPT: {}".format(tspLocalSearch.tourLength))
+        tspLocalSearch.dumpTour()
 
 
 if __name__ == '__main__':
