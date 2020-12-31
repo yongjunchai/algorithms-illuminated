@@ -148,7 +148,7 @@ class MyTestCase(unittest.TestCase):
         graph: Graph = self.get_graph_quiz_20_7()
         tspLocalSearch = TspLocalSearch(graph)
         tspLocalSearch.two_opt("a")
-        self.assertTrue(tspLocalSearch.tourLength == 24)
+        self.assertTrue(tspLocalSearch.tourLength == 23)
         print("tour length found by local search 2OPT: {}".format(tspLocalSearch.tourLength))
         tspLocalSearch.dumpTour()
 

@@ -130,6 +130,7 @@ class TspLocalSearch:
             x = optTourNode2
             u = optTourNode2.next
             xPrevious = x.previous
+            xPreviousLength = x.previousLength
 
             # do the 2OPT swap
             v.next = x
@@ -143,9 +144,11 @@ class TspLocalSearch:
             # flip the link direction from x, to w
             curFlipNode = x
             curFlipNodePrevious = xPrevious
+            curFlipNodePreviousLength = xPreviousLength
             while curFlipNode.name != w.name:
                 curFlipNode.next = curFlipNodePrevious
-                curFlipNode.nextLength = curFlipNodePrevious.nextLength
+                curFlipNode.nextLength = curFlipNodePreviousLength
+                curFlipNodePreviousLength = curFlipNodePrevious.previousLength
                 curFlipNodePrevious = curFlipNodePrevious.previous
                 curFlipNode.next.previous = curFlipNode
                 curFlipNode.next.previousLength = curFlipNode.nextLength
