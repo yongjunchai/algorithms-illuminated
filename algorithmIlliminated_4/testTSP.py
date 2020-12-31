@@ -1,8 +1,8 @@
 import unittest
 
 from algorithmIlliminated_4.tsp import *
-from utils.utils import *
 from algorithmIlliminated_4.tsp_nearest_neighbor import *
+
 
 class MyTestCase(unittest.TestCase):
     def test_TSP_4_vertices(self):

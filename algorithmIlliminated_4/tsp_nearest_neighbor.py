@@ -37,13 +37,11 @@ class TspLocalSearch:
             print("Failed to find start node {}".format(startNode))
             self.suc = False
             return
-        tailTourNode: TourNode = None
         curNode.visited = True
+        curTourNode = TourNode(curNode.name)
+        tailTourNode: TourNode = curTourNode
+        self.headTourNode = curTourNode
         while curNode is not None:
-            curTourNode = TourNode(curNode.name)
-            if tailTourNode is None:
-                tailTourNode = curTourNode
-                self.headTourNode = curTourNode
             # find nearest not-visited neighbor
             nextNode = None
             nextEdgeLength = 0
@@ -100,15 +98,8 @@ class TspLocalSearch:
             lenDecrease = 0
             firstTourNode = self.headTourNode
             while firstTourNode.next.name != self.headTourNode.name:
-                secondTourNode = firstTourNode.next
+                secondTourNode = firstTourNode.next.next
                 while secondTourNode.name != self.headTourNode.name:
-                    # skip if there is endpoint overlap
-                    if firstTourNode.name == secondTourNode.name or firstTourNode.name == secondTourNode.next.name:
-                        secondTourNode = secondTourNode.next
-                        continue
-                    if firstTourNode.next.name == secondTourNode.name or firstTourNode.next.name == secondTourNode.next.name:
-                        secondTourNode = secondTourNode.next
-                        continue
                     linkLenSum = firstTourNode.nextLength + secondTourNode.nextLength
                     swappedLinkLenSum = self.getEdgeLength(firstTourNode.name, secondTourNode.name) + \
                         self.getEdgeLength(firstTourNode.next.name,  secondTourNode.next.name)
