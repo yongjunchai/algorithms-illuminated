@@ -1,5 +1,5 @@
 from collections import deque
-
+import math
 
 class Entry:
     def __init__(self, value):
@@ -97,9 +97,30 @@ class Permutation:
         output = [None for x in range(0, n)]
         self.factorial_stack(nums, output)
 
+    def choose(self, dataList: list, k: int, nextIndex: int, selectedItemsCount: int, output: list):
+        if selectedItemsCount >= k:
+            print(output)
+            self.count += 1
+            return
+
+        lastIndex = len(dataList) - (k - selectedItemsCount) + 1
+        for i in range(nextIndex, lastIndex):
+            output.append(dataList[i])
+            self.choose(dataList, k, i + 1, selectedItemsCount + 1, output)
+            output.pop()
+
 
 if __name__ == "__main__":
     permutation = Permutation()
-    permutation.factorial(5)
+    n = 50
+    k = 11
+    array = [i for i in range(0, n)]
+    output = []
+    permutation.choose(array, k, 0, 0, output)
+    print(permutation.count)
+    if permutation.count != math.comb(n, k):
+        print("error")
+    else:
+        print("matched")
 
 
