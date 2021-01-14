@@ -1,5 +1,7 @@
 from collections import deque
 import math
+import itertools
+
 
 class Entry:
     def __init__(self, value):
@@ -112,8 +114,8 @@ class Permutation:
 
 if __name__ == "__main__":
     permutation = Permutation()
-    n = 50
-    k = 11
+    n = 5
+    k = 3
     array = [i for i in range(0, n)]
     output = []
     permutation.choose(array, k, 0, 0, output)
@@ -124,3 +126,6 @@ if __name__ == "__main__":
         print("matched")
 
 
+
+for i in itertools.combinations([1, 2, 3, 4],2):
+    print(i)
