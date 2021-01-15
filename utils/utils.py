@@ -125,6 +125,7 @@ class NodeUndirected:
             if edge > edgeLength:
                 self.extConnectedEdges[nodeName] = edgeLength
 
+
 class Node:
     def __init__(self, nodeName: str):
         self.name = nodeName
@@ -135,6 +136,7 @@ class Node:
         self.numScc: int = None
         self.predecessor: Node = None
         self.dist: int = None
+        self.color: int = None
 
     def addInflowEdge(self, inflowNodeName: str, edgeLength: int):
         """
