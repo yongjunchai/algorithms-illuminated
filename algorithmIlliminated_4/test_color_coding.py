@@ -37,6 +37,15 @@ class MyTestCase(unittest.TestCase):
         length = panchromaticPath.run(4)
         self.assertTrue(length == 10)
 
+    def test_color_coding(self):
+        edges = self.createGraph_21_5()
+        graph = Graph(edges)
+        colorCoding = ColorCoding(graph)
+        length = colorCoding.run(4, 0.0001)
+        self.assertTrue(length == 6)
+        length = colorCoding.run(5, 0.0001)
+        self.assertTrue(length == 10)
+
 
 if __name__ == '__main__':
     unittest.main()

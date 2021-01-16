@@ -117,10 +117,10 @@ class ColorCoding:
             for item in self.graph.nodes.values():
                 node: Node = item
                 node.color = random.randint(0, k - 1)
-        panchromaticPath = PanchromaticPath(self.graph)
-        length = panchromaticPath.run(k)
-        if length is not None and length < minKpath:
-            minKpath = length
+            panchromaticPath = PanchromaticPath(self.graph)
+            length = panchromaticPath.run(k)
+            if length is not None and length < minKpath:
+                minKpath = length
         return minKpath
 
 
