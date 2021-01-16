@@ -246,6 +246,20 @@ class Path:
         self.path = deque(path)
 
 
+def completeEdge(edges: list):
+    """
+    :return edges with both direction
+    :param edges:
+    """
+    output = list()
+    for e in edges:
+        edge: Edge = e
+        reversedEdge = Edge(edge.targetNodeName, edge.srcNodeName, edge.edgeLength)
+        output.append(edge)
+        output.append(reversedEdge)
+    return output
+
+
 def get_linenumber():
     cf = currentframe()
     return cf.f_back.f_lineno
