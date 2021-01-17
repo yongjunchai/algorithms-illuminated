@@ -1,5 +1,6 @@
 import unittest
 from algorithmIlliminated_4.bellman_held_karp import *
+from algorithmIlliminated_4.bellman_held_karp_optimize import *
 
 
 class MyTestCase(unittest.TestCase):
@@ -29,10 +30,16 @@ class MyTestCase(unittest.TestCase):
         graph = Graph(edges)
         return graph
 
-    def test_something(self):
+    def test_bellmanHeldKarp(self):
         graph = self.get_graph_quiz_20_7()
-        bellManHeldKarp = BellmanHeldKarp(graph)
-        tourLength = bellManHeldKarp.run()
+        bellmanHeldKarp = BellmanHeldKarp(graph)
+        tourLength = bellmanHeldKarp.run()
+        self.assertTrue(23 == tourLength)
+
+    def test_bellmanHeldKarpOptimize(self):
+        graph = self.get_graph_quiz_20_7()
+        bellmanHeldKarpOptimize = BellmanHeldKarpOptimize(graph)
+        tourLength = bellmanHeldKarpOptimize.run()
         self.assertTrue(23 == tourLength)
 
 
