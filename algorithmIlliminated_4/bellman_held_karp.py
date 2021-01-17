@@ -10,7 +10,7 @@ class Solution:
         self.penultimateVertexIndex = None
 
 
-class BellManHeldKarp:
+class BellmanHeldKarp:
     def __init__(self, graph: Graph):
         # the input graph is a complete graph
         self.graph = graph

@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_something(self):
         graph = self.get_graph_quiz_20_7()
-        bellManHeldKarp = BellManHeldKarp(graph)
+        bellManHeldKarp = BellmanHeldKarp(graph)
         tourLength = bellManHeldKarp.run()
         self.assertTrue(23 == tourLength)
 
