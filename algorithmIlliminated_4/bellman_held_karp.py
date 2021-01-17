@@ -7,7 +7,7 @@ import sys
 class Solution:
     def __init__(self):
         self.length = None
-        self.penultimateVertaxIndex = None
+        self.penultimateVertexIndex = None
 
 
 class BellManHeldKarp:
@@ -47,7 +47,7 @@ class BellManHeldKarp:
         for i in range(0, n - 1):
             solution = Solution()
             solution.length = matrixGraph[0][i + 1]
-            solution.penultimateVertaxIndex = indexNameDict[str(i + 1)]
+            solution.penultimateVertexIndex = indexNameDict[str(i + 1)]
             subProblems[(1 << i) - 1][i] = solution
 
         vertexIndicesArray = [i for i in range(0, n - 1)]
@@ -68,7 +68,7 @@ class BellManHeldKarp:
                         curLength = subProblemSolution.length + matrixGraph[k + 1][j + 1]
                         if curLength < solution.length:
                             solution.length = curLength
-                            solution.penultimateVertaxIndex = k
+                            solution.penultimateVertexIndex = k
                     subProblems[index - 1][j] = solution
         lastStop = None
         minTourLength = sys.maxsize
@@ -86,10 +86,10 @@ class BellManHeldKarp:
         curVertaxIndex = lastStop
         while curProblemSize > 1:
             solution: Solution = subProblems[curProblemSet - 1][curVertaxIndex]
-            print(edgeTemplate.format(indexNameDict[str(solution.penultimateVertaxIndex + 1)], indexNameDict[str(curVertaxIndex + 1)], matrixGraph[solution.penultimateVertaxIndex + 1][curVertaxIndex + 1]))
+            print(edgeTemplate.format(indexNameDict[str(solution.penultimateVertexIndex + 1)], indexNameDict[str(curVertaxIndex + 1)], matrixGraph[solution.penultimateVertexIndex + 1][curVertaxIndex + 1]))
             curProblemSize -= 1
             curProblemSet &= ~(1 << curVertaxIndex)
-            curVertaxIndex = solution.penultimateVertaxIndex
+            curVertaxIndex = solution.penultimateVertexIndex
         print(edgeTemplate.format(indexNameDict["0"], indexNameDict[str(curVertaxIndex + 1)], matrixGraph[0][curVertaxIndex + 1]))
         return minTourLength
 
