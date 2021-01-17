@@ -92,7 +92,7 @@ class PanchromaticPath:
         size = k
         curVertexIndex = vertexIndex
         curSet = rows
-        edgeTemplate = "{} --> {} "" {}"
+        edgeTemplate = "{} --> {} :: {}"
         while size > 1:
             curSolution: Solution = subProblems[curSet - 1][curVertexIndex]
             print(edgeTemplate.format(indexNameDict[str(curSolution.previousVertexIndex)], indexNameDict[str(curVertexIndex)], curSolution.edgeLength))
