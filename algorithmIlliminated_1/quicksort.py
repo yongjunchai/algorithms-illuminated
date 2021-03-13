@@ -14,6 +14,11 @@ class Quicksort:
         valPivot = arr[left]
         i = left + 1
         for j in range(left + 1, right + 1):
+            """
+            loop invariant:
+            [left + 1, i - 1] elements less than pivot element
+            [i, j) elements bigger than or equal to pivot element
+            """
             if getVal(arr[j]) < getVal(valPivot):
                 arr[i], arr[j] = arr[j], arr[i]
                 i += 1
