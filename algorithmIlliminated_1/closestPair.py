@@ -17,7 +17,7 @@ Thoughts about how to extend this algorithm to find the closest pairs in 3D:
         key observation is: let minLenPair be the min pair distance in left or right split. 
         in every cube of minLenPair/2 length, there is only one point. The reason is: if there is two points in
         same cube, the max distance between these two points will be (sqrt(3)/2) minLenPair, which is less than minLenPair, 
-        This will be contradict with fact that minLenPair is the min length between point paris in left of right split. 
+        This will contradict with the fact that minLenPair is the min length between point paris in left of right split. 
         Then in the block of length minLenPair, there will be most 16 points. Then the maxStep is 15.              
 """
 
