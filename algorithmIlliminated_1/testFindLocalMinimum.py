@@ -26,7 +26,7 @@ class MyTestCase(unittest.TestCase):
         return rndNums
 
     def test_9_many_times_with_rnd(self):
-        for j in range(3, 1000):
+        for j in range(3, 50):
             i = 9
             rndData = self.createRandomData(i, i)
             findLocalMinimum = FindLocalMinimum()
@@ -35,7 +35,7 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(isLocalMin)
 
     def test_increasing_rows(self):
-        for i in range(3, 550):
+        for i in range(3, 50):
             print(i)
             rndData = self.createRandomData(i, i)
             findLocalMinimum = FindLocalMinimum()
@@ -44,12 +44,13 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(isLocalMin)
 
     def test_increasing_rows_ordered(self):
-        for i in range(3, 150):
+        for i in range(3, 50):
             rndData = self.createOrderedData(i, i)
             findLocalMinimum = FindLocalMinimum()
             row, col = findLocalMinimum.findLocalMinimum(rndData, i, i)
             isLocalMin = FindLocalMinimum.isLocalMinimum(rndData, i, i, 0, 0, row, col)
             self.assertTrue(isLocalMin)
+
 
 if __name__ == '__main__':
     unittest.main()

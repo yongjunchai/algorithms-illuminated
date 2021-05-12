@@ -62,28 +62,28 @@ class FindLocalMinimum:
         # roll downhill to the quadrant
         if estMinRow is not None and estMinCol is not None:
             if matrix[estMinRow][estMinCol] < matrix[minRow][minCol]:
+                # this is to make sure we don't roll out of (cross) the matrix
                 # enter the quadrant that the estimate minimum item exist
                 if estMinRow <= midRow:
                     if estMinCol <= midCol:
                         # bottom left quadrant
                         return self.findLocalMinimum_internal(matrix, midRow - startRow + 1, midCol - startColumn + 1,
-                                                              startRow, startColumn, minRow - 1, minCol)
+                                                              startRow, startColumn, estMinRow, estMinCol)
                     else:
                         # bottom right quadrant
                         return self.findLocalMinimum_internal(matrix, midRow - startRow + 1,
                                                               columns - (midCol - startColumn), startRow, midCol,
-                                                              minRow - 1, minCol)
+                                                              estMinRow, estMinCol)
                 else:
                     if estMinCol <= midCol:
                         # top left quadrant
                         return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow),
-                                                              midCol - startColumn + 1, midRow, startColumn, minRow + 1,
-                                                              minCol)
+                                                              midCol - startColumn + 1, midRow, startColumn, estMinRow, estMinCol)
                     else:
                         # top right quadrant
                         return self.findLocalMinimum_internal(matrix, rows - (midRow - startRow),
                                                               columns - (midCol - startColumn), midRow, midCol,
-                                                              minRow + 1, minCol)
+                                                              estMinRow, estMinCol)
         if minRow - 1 >= startRow:
             if matrix[minRow - 1][minCol] < matrix[minRow][minCol]:
                 if minCol <= midCol:
