@@ -1,6 +1,8 @@
 from algorithmIlliminated_3.huffman import Node
 from collections import deque
 
+
+# tag: bfs, breadth first, level
 class Tree:
     def createTreeRecrusive(self, cur: Node, max: int):
         if cur.pSum >= max:
@@ -14,6 +16,7 @@ class Tree:
         if cur.right is not None:
             self.createTreeRecrusive(cur.right, max)
 
+    # create tree breath first
     def createTreeIterative(self, max: int):
         queue = deque()
         root = Node(None, None, 1)
@@ -90,6 +93,29 @@ class Tree:
             if cur.right is not None:
                 queue.append(cur.right)
         return result
+
+    def bfs_level_iterative(self, root: Node):
+        queue = deque()
+        queue.append((0, root))
+        nodes = []
+        level = 0
+        while len(queue) > 0:
+            curEntry = queue.popleft()
+            curLevel = curEntry[0]
+            curNode : Node = curEntry[1]
+            if level == curLevel:
+                if curNode.left is not None:
+                    queue.append((level + 1, curNode.left))
+                if curNode.right is not None:
+                    queue.append((level + 1, curNode.right))
+                nodes.append(curNode.pSum)
+            else:
+                queue.appendleft(curEntry)
+                print("{} :: {}".format(level, nodes))
+                nodes.clear()
+                level += 1
+        if len(nodes) > 0:
+            print("{} :: {}".format(level, nodes))
 
     def getTreeHeight(self, cur: Node, curHeight: int):
         if cur is None:

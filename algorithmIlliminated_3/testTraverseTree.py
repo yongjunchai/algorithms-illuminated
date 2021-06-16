@@ -5,7 +5,7 @@ from algorithmIlliminated_3.treeTraverse import *
 class traverseTreeTestCase(unittest.TestCase):
     def test_treeCreationAndTraversal(self):
         tree: Tree = Tree()
-        totalNodes = 1234
+        totalNodes = 55
         root1 = tree.createTreeIterative(totalNodes)
         root2 = Node(None, None, 1)
         tree.createTreeRecrusive(root2, totalNodes)
@@ -14,6 +14,7 @@ class traverseTreeTestCase(unittest.TestCase):
         print(nodes1)
         print(nodes2)
         self.assertTrue(nodes1 == nodes2)
+        tree.bfs_level_iterative(root1)
 
     def test_dfs(self):
         tree: Tree = Tree()
