@@ -28,19 +28,19 @@ class Wordle:
     def findWords(self):
         f = open(self.wordFIle, "r")
         lines = f.readlines()
-        overallGrayedLetters = {"i", "r", "a", "b", "g"}
+        overallGrayedLetters = {}
         firstGrayedLetters = {}
-        sndGrayedLetters = {"e"}
+        sndGrayedLetters = {}
         thirdGrayedLetters = {}
-        fourthGrayedLetters = {"t", "e"}
-        fifthGrayedLetters = {"e"}
-        mustHaveLetters = {"e", "t"}
+        fourthGrayedLetters = {}
+        fifthGrayedLetters = {}
+        mustHaveLetters = {}
         firstLetter = None
         sndLetter = None
         thirdLetter = None
         fourthLetter = None
-        fifthLetter = "t"
-        noMultiplLetters = { "e" }
+        fifthLetter = None
+        noMultiplLetters = {}
         hits = []
         for line in lines:
             if len(line) != 6:
