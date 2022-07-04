@@ -2,7 +2,7 @@
 
 class Wordle:
     def __init__(self):
-        self.wordFIle = "/home/go/d/git/alg/word/data/words_alpha.txt"
+        self.wordFIle = "./data/words_alpha.txt"
 
     def hasLetters(self, word: str, letters):
         for letter in letters:
